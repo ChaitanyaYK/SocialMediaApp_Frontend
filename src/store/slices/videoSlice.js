@@ -1,6 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+// import api from "../axios";
 
+// If you use cookies for auth (res.cookie('token', ...) in backend), then make sure every Axios request has:
+// Axios default config
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = '/api';
+
+// const api = axios.interceptors.request.use((config) => {
+//   const token = store.getState().auth?.user?.token;
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// })
 
 // Helper to handle FormData for file uploads
 export const createFormData = (data) => {
@@ -17,102 +30,123 @@ export const createFormData = (data) => {
 
     // Async thunks
 export const fetchVideos = createAsyncThunk(
-    'videos/fetchVideos',
-    async (params, {rejectWithValue}) => {
-        try {
-            const response = await axios.get('/api/videos', { params });
-            return response.data.data;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
+  'video/fetchVideos',
+  async ({ page = 1, limit = 10, query = "", sortBy = "newest" }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get('/videos', { params: { page, limit, query, sortBy } });
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch videos");
     }
-)
+  }
+);
+
 
 
 export const fetchVideoById = createAsyncThunk(
-    'videos/fetchVideoById',
+    'video/fetchVideoById',
     async (videoId, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`/api/videos/${videoId}`);
+            const response = await axios.get(`/videos/${videoId}`);
             return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message || "Failed to fetch video");
         }
     }
 )
 
 
 export const publishVideo = createAsyncThunk(
-    'videos/publishVideo',
-    async (videoData, {rejectWithValue}) => {
+    'video/publishVideo',
+    async (videoData, {rejectWithValue, getState}) => {
         try {
             const formData = createFormData(videoData);
-            const response = await axios.post('/api/videos', formData, {
-                headers: {'Content-Type': 'multipart/form-data'}
+            const token = getState().auth?.user?.token;
+            const response = await axios.post(`/videos`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
+                },
+                withCredentials: true,
             });
             return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message || "Failed to publish video");
         }
     }
 )
 
 
 export const updateVideo = createAsyncThunk(
-    'videos/updateVideo',
-    async ({videoId, videoData}, {rejectWithValue}) => {
+    'video/updateVideo',
+    async ({videoId, videoData}, {rejectWithValue, getState}) => {
         try {
             const formData = createFormData(videoData);
-            const response = await axios.patch(`/api/videos/${videoId}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data'}
+            const token = getState().auth?.user?.token;
+            const response = await axios.patch(`/videos/${videoId}`, formData, {
+                headers: { 
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
+                },
+                withCredentials: true,
             });
-            return response.data.data.video;
+            return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message || "Failed to update video");
         }
     }
 )
 
 export const deleteVideo = createAsyncThunk(
-    'videos/deleteVideo',
+    'video/deleteVideo',
     async (videoId, {rejectWithValue}) => {
         try {
-            const response = await axios.delete(`/api/videos/${videoId}`);
+            const response = await axios.delete(`/videos/${videoId}`);
             return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message || "Failed to delete video");
         }
     }
 )
     
 export const toggleVideoPublishStatus = createAsyncThunk(
-    'videos/toggleVideoPublishStatus',
+    'video/toggleVideoPublishStatus',
     async (videoId, {rejectWithValue}) => {
         try {
-            const response = await axios.patch(`/api/videos/${videoId}/toggle-publish`)
+            const response = await axios.patch(`/videos/toggle/publish/${videoId}`)
             return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message || "Failed to toggle video publish status");
         }
     }
 )
 
-const initialState = {
-    videos: [],
-    currentVideo: null,
-    loading: false,
-    error: null,
-    pagination: {}
-}
+
 
 const videoSlice = createSlice({
-    name: 'videos',
-    initialState,
+    name: 'video',
+    initialState: {
+        videos: [],
+        loading: false,
+        error: null,
+        pagination: {
+            totalVideos: 0,
+            page: 1,
+            limit: 10,
+            totalPage: 0,
+        },
+        fillter: {
+            query: "",
+            sortBy: "newest"
+        }
+    },
     reducers: {
         clearVideoState: (state) => {
-            state.currentVideo = null;
             state.error = null;
-        }
+        },
+        setPage: (state, action) => {
+            state.pagination.page = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -137,7 +171,7 @@ const videoSlice = createSlice({
             state.loading = true;
         })
         .addCase(fetchVideoById.fulfilled, (state, action) => {
-            state.currentVideo = action.payload;
+            
             state.loading = false;
         })
         .addCase(fetchVideoById.rejected, (state, action) => {
@@ -195,6 +229,14 @@ const videoSlice = createSlice({
     }
 })
 
-export const { clearVideoState } = videoSlice.actions;
+export const { clearVideoState, setPage, setSearch, setSortBy } = videoSlice.actions;
 
 export default videoSlice.reducer;
+
+// axios.interceptors.request.use((config) => {
+//   const token = store.getState().auth?.user?.token;
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// });

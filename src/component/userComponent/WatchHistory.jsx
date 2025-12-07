@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../Button.jsx";
-import { getWatchHistory, getCurrentUser } from "../../store/authSlice.js";
+import { getWatchHistory, getCurrentUser } from "../../store/slices/authSlice.js";
 
 // {history.map((entry) => (
 //   <div key={entry.video._id}>

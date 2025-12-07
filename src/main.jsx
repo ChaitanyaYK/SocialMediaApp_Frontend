@@ -3,21 +3,14 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { Provider } from 'react-redux';
-// import {createBrowserRouter, RouterProvider} from 'react-router-dom'
-// import { AuthLayout } from './component/Index.js';
 import store from './store/store.js';
-import Home from './pages/Home.jsx';
+// import Home from './pages/Home.jsx';
 import Signup from './pages/Signup.jsx';
 import Login from './pages/Login.jsx';
-import { AuthLayout } from './component/index.js';
+import { AuthLayout, UploadVideo, ChangePassword, UserProfile, WatchHistory, HomePage, VideoList } from './component/index.js';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import UploadVideo from './component/videoComponent/UploadVideo.jsx';
-// import { Tuple } from '@reduxjs/toolkit';
-import ChangePassword from './component/userComponent/ChangePassword.jsx';
 import { ToastContainer } from 'react-toastify';
-import UpdateAccount from './component/userComponent/updateAccount.jsx';
-import UserProfile from './component/userComponent/UserProfile.jsx';
-import WatchHistory from './component/userComponent/WatchHistory.jsx';
+// import UpdateAccount from './component/index.js';
 
 // import { ApiProvider } from '@reduxjs/toolkit/query/react'; // optional for redux store provide it give api={} like provider give store={}
 
@@ -28,7 +21,7 @@ const initialState = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home/>
+        element: <HomePage/>
       },
       {
         path: '/login',
@@ -62,14 +55,14 @@ const initialState = createBrowserRouter([
           </AuthLayout>
         )
       },
-      {
-        path: '/updateAccount',
-        element: (
-          <AuthLayout authentication={true}>
-            <UpdateAccount />
-          </AuthLayout> 
-        )
-      },
+      // {
+      //   path: '/updateAccount',
+      //   element: (
+      //     <AuthLayout authentication={true}>
+      //       <UpdateAccount />
+      //     </AuthLayout> 
+      //   )
+      // },
       {
         path: '/userProfile',
         element: (
@@ -82,6 +75,12 @@ const initialState = createBrowserRouter([
         path: '/watchHistory',
         element: (
           <WatchHistory />
+        )
+      },
+      {
+        path: '/fetchVideos',
+        element: (
+          <VideoList />
         )
       }
     //   {

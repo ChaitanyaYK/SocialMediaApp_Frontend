@@ -2,24 +2,24 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 
-export const fetchVideoComments = (videoId) => async (dispatch) => {
+export const fetchVideoComments = (videoId, page = 1, limit = 10, query= "", sortBy ="newest" ) => async (dispatch) => {
     try {
         dispatch(setLoading());
         const { data } = await axios.get(`/api/comments/${videoId}`, {
             params: { page, limit, query, sortBy },
         });
-        dispatch(getVideoComments(data.data.comments))
+        dispatch(getVideoComments({comments: data.data.comments, pagination: data.data.pagination}))
 
     } catch (error) {
         dispatch(setError(error?.response?.data?.message || "Error in fetching comment"));
     }
 }
 
-export const insertComment = (videoId, content) => async (dispatch) => {
+export const insertComment = (videoId, content, parentComment = null) => async (dispatch) => {
     try {
         dispatch(setLoading());
-        const {videoData} = await axios.post(`/api/comments/${videoId}`, content);
-        dispatch(addComment(videoData.data));
+        const {data} = await axios.post(`/api/comments/${videoId}`, { content, parentComment});
+        dispatch(addComment(data.data));
     } catch (error) {
         dispatch(setError(error?.response?.data?.message || "Error in creating comment"));
     }
@@ -28,8 +28,8 @@ export const insertComment = (videoId, content) => async (dispatch) => {
 export const editComment = (commentId, content) => async (dispatch) => {
     try {
         dispatch(setLoading());
-        const {commentData} = await axios.put(`/api/comments/c/${commentId}`, content);
-        dispatch(updateComment({ id: commentId, updatedComment: commentData.data }));
+        const {data} = await axios.put(`/api/comments/c/${commentId}`, {content});
+        dispatch(updateComment({ id: commentId, updatedComment: data.data }));
     } catch (error) {
         dispatch(setError(error?.response?.data?.message || "Error in updating comment"));
     }
@@ -39,7 +39,7 @@ export const deletedComment = (commentId) => async (dispatch) => {
     try {
         dispatch(setLoading());
         await axios.delete(`/api/comment/c/${commentId}`);
-        dispatch(deleteComment(commentId))
+        dispatch(deleteComment(commentId));
     } catch (error) {
         dispatch(setError(error?.response?.data?.message || "Error in deleting comment"));
     }
@@ -55,7 +55,7 @@ const commentSlice = createSlice({
             limit: 10,
             totalPages: 0,
         },
-        commentData: null,
+        // commentData: null,
         error: null,
         isError: false,
         isAuthenticated: false,
@@ -69,16 +69,14 @@ const commentSlice = createSlice({
         },
 
         addComment: (state, action) => {
-            state.comments = [action.payload, ...comments];  // prepend new comment
-            state.commentData = action.payload;
+            state.comments = [action.payload, ...state.comments];  // prepend new comment
             state.error = null;
             state.loading = false;
             state.isAuthenticated = true;
         },
 
         getVideoComments: (state, action) => {
-            state.comments = action.payload.comments;
-            state.pagination = action.payload.pagination;
+            state.comments = action.payload;
             state.error = null;
             state.loading = false;
             state.isAuthenticated = true;
@@ -87,16 +85,15 @@ const commentSlice = createSlice({
         updateComment: (state, action) => {
             const {id, updatedComment} = action.payload;
             state.comments = state.comments.map((comment) => 
-                comment.id === id ? {  ...updatedComment, ...comment } : comment
+                comment.id === id ? {  ...comment, ...updateComment } : comment
             );
-            state.commentData = updateComment;
             state.error = null;
             state.loading = false;
             state.isAuthenticated = true;
         },
 
         deleteComment: (state, action) => {
-            state.commentData = state.comments.filter((comment) => comment.id !== action.payload);
+            state.comments = state.comments.filter((comment) => comment.id !== action.payload);
             state.error = null;
             state.loading = false;
             state.isAuthenticated = true;

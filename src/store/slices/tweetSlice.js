@@ -4,7 +4,7 @@ import axios from "axios";
 export const insertTweet = () => async (dispatch) => {
     try {
         dispatch(setLoading());
-        const { data } = await axios.post('/api/tweets');
+        const res = await axios.post('/api/tweets');
         dispatch(createTweet());
     } catch (error) {
         dispatch(setError(error.responce.data.message))
@@ -13,8 +13,8 @@ export const insertTweet = () => async (dispatch) => {
 export const getTweets = (userId) => async (dispatch) => {
     try {
         dispatch(setLoading());
-        const { data } = await axios.post(`/api/tweets/user/${userId}`);
-        dispatch(getUserTweets(userId));
+        const res = await axios.post(`/api/tweets/user/${userId}`);
+        dispatch(getUserTweets(res.data));
     } catch (error) {
         dispatch(setError(error.responce.data.message))
     }
@@ -22,8 +22,8 @@ export const getTweets = (userId) => async (dispatch) => {
 export const editTweet = (tweetId) => async (dispatch) => {
     try {
         dispatch(setLoading());
-        const { data } = await axios.post(`/api/tweets/${tweetId}`);
-        dispatch(updateTweet(tweetId));
+        const res = await axios.post(`/api/tweets/${tweetId}`);
+        dispatch(updateTweet(res.data));
     } catch (error) {
         dispatch(setError(error.responce.data.message))
     }
@@ -31,8 +31,8 @@ export const editTweet = (tweetId) => async (dispatch) => {
 export const removeTweet = (tweetId) => async (dispatch) => {
     try {
         dispatch(setLoading());
-        const { data } = await axios.post(`/api/tweets/${tweetId}`);
-        dispatch(deleteTweet(tweetId));
+        const res = await axios.post(`/api/tweets/${tweetId}`);
+        dispatch(deleteTweet(res.data));
     } catch (error) {
         dispatch(setError(error.responce.data.message))
     }
@@ -40,7 +40,7 @@ export const removeTweet = (tweetId) => async (dispatch) => {
 
 const initialState = {
     content: null,
-    replies: [{content, owner}],
+    replies: [],
     isAuthenticated: false,
     loading: false,
     isError: false,
@@ -96,6 +96,6 @@ const tweetSlice = createSlice({
     }
 })
 
-export const {createTweet, updateTweet, getUserTweets, deleteTweet, setError, setLoading} = tweetSlice.actions
+export const {createTweet, updateTweet, getUserTweets, deleteTweet, setError, setLoading} = tweetSlice.actions;
 
-export default tweetSlice.reducer
+export default tweetSlice.reducer;

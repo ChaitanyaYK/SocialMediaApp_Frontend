@@ -5,7 +5,7 @@ import { Input, Button, Logo } from "../index.js";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-import { updateAccount, updateAvatar, updateCoverImage } from "../../store/authSlice.js";
+import { updateAccount, updateAvatar, updateCoverImage } from "../../store/slices/authSlice.js";
 
 const UpdateAccount = () => {
     const dispatch = useDispatch();
@@ -115,9 +115,6 @@ const UpdateAccount = () => {
               type="file"
               placeholder="Upload Avatar Image"
               className=""
-              // onInput={(e) => {
-
-              // }}
               {...register("avatar", {required: true})}
           />
             { avatarFile &&

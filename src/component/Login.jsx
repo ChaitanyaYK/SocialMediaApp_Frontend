@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import {useNavigate, Link} from "react-router-dom";
 // import { useLoginUserMutation } from "../store/api/userApi.js";
 
-import {loginUser, getCurrentUser} from "../store/authSlice.js"
+import {loginUser, getCurrentUser} from "../store/slices/authSlice.js"
 
 function Login() {
     const [error, setError] = useState("");
@@ -15,18 +15,18 @@ function Login() {
 
     // const [loginUser, {isAuthenticated, isError, error}] = useLoginUserMutation();
 
-    const {isAuthenticated, loading} = useSelector((state) => state.auth.isAuthenticated)
+    const {isAuthenticated, loading} = useSelector((state) => state.auth.isAuthenticated);
+    // const user = useSelector((state) => {state.auth.user})
+    // console.log(user);
+    
 
     const login = async(data) => {
         setError("");
         try {
         const resultAction = await dispatch(loginUser(data));
-        if (loginUser.fulfilled.match(resultAction)) {
-          await dispatch(getCurrentUser());
-
-          // if(userData) dispatch(loginUser(userData));
-        }
-        
+          if (loginUser.fulfilled.match(resultAction)) {
+            await dispatch(getCurrentUser());
+          }
         } catch (err) {
             setError(err.message)
         }
@@ -40,7 +40,7 @@ function Login() {
 
   return (
     <div
-      className='flex items-center justify-center w-full'
+      className='flex items-center justify-center w-full relative z-50 backdrop-blur-sm'
     >
       <div className={`mx-auto w-full max-w-lg bg-gray-700 rounded-xl p-10 border border-black/10`}>
         <div className="mb-2 flex justify-start flex-col">
@@ -69,7 +69,7 @@ function Login() {
             })}
         />
         <Input
-          label="Email:"
+          label="Email"
           type="email"
           placeholder="Enter your Email "
           {...register("email", {
@@ -81,7 +81,7 @@ function Login() {
         })}
         />
         <Input 
-          label="Password: " type="password"
+          label="Password" type="password"
           placeholder="Enter your password"
           {...register("password", {
             required: true,

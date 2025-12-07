@@ -1,4 +1,4 @@
-import { logoutUser } from "../../store/authSlice";
+import { logoutUser } from "../../store/slices/authSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import {Button} from "../index.js";
 

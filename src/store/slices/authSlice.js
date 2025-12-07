@@ -2,8 +2,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
 // Axios default config
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = '/api';
+
 
 // --- Async Thunks ---
 
@@ -11,7 +14,7 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/api/user/register", formData, {
+      const response = await axios.post("/user/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return response.data.data;
@@ -23,10 +26,12 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (credentials, { rejectWithValue }) => {
+  async (credentials, { dispatch, rejectWithValue}) => {
     try {
-      const response = await axios.post("/api/user/login", credentials);
-      return response.data.data.user || response.data.data;
+      await axios.post("/user/login", credentials);
+      const userRes = await dispatch(getCurrentUser()).unwrap();
+      // return response.data.data.user || response.data.data;
+      return userRes;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
     }
@@ -37,7 +42,7 @@ export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post("/api/user/logout");
+      await axios.post("/user/logout");
       return true;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
@@ -47,11 +52,12 @@ export const logoutUser = createAsyncThunk(
 
 export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue}) => {
     try {
-      const response = await axios.get("/api/user/current-user");
+      const response = await axios.get("/user/current-user");
       return response.data.data;
     } catch (err) {
+      // console.log(err);
       return rejectWithValue(err?.response?.data?.message || err.message);
     }
   }
@@ -60,8 +66,8 @@ export const getCurrentUser = createAsyncThunk(
 export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async (data, {rejectWithValue}) => {
-    try {
-      const response = await axios.post("/api/user/change-password", data);
+    try {      
+      const response = await axios.post("/user/change-password", data);
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
@@ -73,7 +79,11 @@ export const updateAccount = createAsyncThunk(
   "auth/updateAccount",
   async ({data, userId}, {rejectWithValue}) => {
     try {
-      const response = await axios.patch("/api/user/update-account", data);
+      const response = await axios.patch("/user/update-account", data, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+      });
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
@@ -83,9 +93,13 @@ export const updateAccount = createAsyncThunk(
 
 export const updateAvatar = createAsyncThunk(
   "auth/updateAvatar",
-  async (data, {rejectWithValue}) => {
+  async (data, {rejectWithValue, getState}) => {
     try {
-      const response = await axios.patch("/api/user/update-avatar", data);
+      const response = await axios.patch("/user/update-avatar", data, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+      });
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
@@ -97,7 +111,11 @@ export const updateCoverImage = createAsyncThunk(
   "auth/updateCoverImage",
   async (data, {rejectWithValue}) => {
     try {
-      const response = await axios.patch("/api/user/update-coverImage", data);
+      const response = await axios.patch("/user/update-coverImage", data, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+      });
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
@@ -109,7 +127,7 @@ export const getChannelProfile = createAsyncThunk(
   "auth/getChannelProfile",
   async (username, {rejectWithValue}) => {
     try {
-      const response = await axios.get(`/api/user/c/${username}`);
+      const response = await axios.get(`/user/c/${username}`);
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
@@ -121,7 +139,7 @@ export const getWatchHistory = createAsyncThunk(
   "auth/getWatchHistory",
   async (_, {rejectWithValue}) => {
     try {
-      const response = await axios.get("/api/user/history");
+      const response = await axios.get("/user/history");
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);
@@ -138,6 +156,7 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     history: [],
+    profile: null,
     isAuthenticated: false,
     loading: false,
     isError: false,
@@ -157,7 +176,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -173,7 +192,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -268,6 +287,14 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
+      // get channel-profile
+      .addCase(getChannelProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile = action.payload;
+        state.isAuthenticated = true
+      })
+
+      // get WatchHistory
       .addCase(getWatchHistory.pending, (state) => {
         state.loading = true;
       })

@@ -1,14 +1,16 @@
 import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { deleteVideo, toggleVideoPublishStatus, fetchVideos } from "../../store/videoSlice2.js";
+import { deleteVideo, toggleVideoPublishStatus, fetchVideos } from "../../store/slices/videoSlice.js";
 
 
 const VideoDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { videos, loading, error, pagination } = useSelector((state) => state.videos);
+    const {videos, loading, pagination, error} = useSelector((state) => state.video);
+    // console.log(s);
+    
 
     useEffect(() => {
         dispatch(fetchVideos({page: 1, limit: 10}));
@@ -119,4 +121,6 @@ const VideoDashboard = () => {
     </div>
   );
 }
+
+export default VideoDashboard;
 
