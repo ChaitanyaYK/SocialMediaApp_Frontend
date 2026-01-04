@@ -1,21 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button, Logo, Input } from "../index.js";
-import { BsSearch } from "react-icons/bs";
+// import { BsSearch } from "react-icons/bs";
 // import { TbSearch } from "react-icons/tb";
-import { FaPlus } from "react-icons/fa6";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { PiMicrophoneBold } from "react-icons/pi";
-import {Upload} from "lucide-react"
+// import { FaPlus } from "react-icons/fa6";
+// import { IoNotificationsOutline } from "react-icons/io5";
+// import { PiMicrophoneBold } from "react-icons/pi";
+import {Upload, SearchIcon} from "lucide-react"
 import {UpdateAccount, UploadVideo, VideoDashboard, VideoList, CommentList, CommentForm} from "../index.js"
 import LogoutBtn from "./LogoutBtn.jsx"
+import axios from "axios";
 
 
 const Header = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
     const navigate = useNavigate();
   const [click, setClick] = useState(false)
+  const [search, setSearch] = useState("");
+  const [searchItem, setSearchItem] = useState({});
 
   const navItems = [
         // {
@@ -75,6 +78,28 @@ const Header = () => {
         // },     
     ]
 
+    useEffect(() => {
+      const controller = new AbortController();
+      ;(async() => {
+        try {
+          const res = await axios.get('api/video?search', search, {
+            signal: controller.signal
+          })
+          setSearchItem(res.data);
+        } catch (error) {
+          if (axios.isCancel(error)) {
+            console.log('request is cancel', error);
+            return
+          }
+        }
+      })();
+
+      return () => {
+        controller.abort()
+        console.log("Controller is abort");
+      }
+    }, [search])
+
   // const Buttons = [ { name: "Home", slug: "/" },  { name: "Signup", slug: "/signup" },  { name: "Login", slug: "/login" },];
 
     return (
@@ -83,14 +108,16 @@ const Header = () => {
         <nav className="hidden md:flex items-center space-x-4 flex justify-between items-center">
           <Link to="/">
             <Logo width="60px" />
-                        </Link>
-          <div className="flex ">
-            <Input type="search" placeholder={"Search..."} className="rounded-l-full"/>
-            <Button className="rounded-l-full" rounded="rounded-r-full mr-3">
-              <BsSearch className="text-white size-5" />
-            </Button>
+          </Link>
+          <div className="flex">
+            <Input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={"Search..."} className="rounded-l-full"/>
+            <div className="rounded-l-full">
+              <button className="bg-gray-600">
+                <SearchIcon className=""/>
+              </button>
+            </div>
 
-            <PiMicrophoneBold className="p-1.5 w-14 h-10 rounded-4xl bg-neutral-800 hover:bg-neutral-700" color="white" />
+            {/* <PiMicrophoneBold className="p-1.5 w-14 h-10 rounded-4xl bg-neutral-800 hover:bg-neutral-700" color="white" />
                     </div>
 
           <div className="flex">
@@ -100,7 +127,7 @@ const Header = () => {
               console.log("button clicked", click);
             }} className="" bgColor="bg-neutral-800 hover:bg-neutral-700 h-10"><FaPlus className="mr-1.5 size-7"/>Create</Button>
             
-            <Button bgColor="bg-gray-900"><IoNotificationsOutline className="rounded-l-4xl h-10 w-10 hover:bg-gray-800 p-2"  color="white"/></Button>
+            <Button bgColor="bg-gray-900"><IoNotificationsOutline className="rounded-l-4xl h-10 w-10 hover:bg-gray-800 p-2"  color="white"/></Button> */}
             <div>
               <ul className="flex ml-auto">
                 {navItems.map((item) => 
@@ -117,8 +144,8 @@ const Header = () => {
                 )}
 
                 { isAuthenticated && (
-                    <li>
-                        <LogoutBtn/>
+                    <li >
+                        <LogoutBtn className={`w-full`} />
                     </li>
                 )}
                 </ul>

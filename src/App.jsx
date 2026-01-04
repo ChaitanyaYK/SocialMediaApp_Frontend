@@ -10,7 +10,7 @@ function App() {
     <div className="flex flex-col min-h-dvw bg-neutral-800 dark:bg-neutral-900 transition-colors">
         <Header />
 
-      <div className="flex flex-1 overflow-hidden w-screen">
+      <div className="flex flex-2 overflow-hidden w-screen">
         <SideBar open={open} setOpen={setOpen} />
 
         <main 

@@ -19,6 +19,7 @@ import CommentForm from './commentComponent/CommentForm.jsx';
 import CommentList from './commentComponent/CommentList.jsx';
 import SideBar from './SideBar/SideBar.jsx';
 import HomePage from './HomePage/HomePage.jsx';
+import Watch from './videoComponent/Watch.jsx';
 
 export {
     AuthLayout,
@@ -41,5 +42,6 @@ export {
     CommentForm,
     CommentList,
     SideBar,
-    HomePage
+    HomePage,
+    Watch
 }

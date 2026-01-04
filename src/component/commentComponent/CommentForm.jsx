@@ -1,51 +1,157 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { insertComment, editComment } from "../../store/slices/commentSlice.js";
-import { Button, Input, Select } from "../index.js"
+import React, {useState, useEffect} from 'react';
+import {Button, Input} from '../index';
+import { useDispatch, useSelector } from 'react-redux';
+import { editComment, addReply, deletedComment } from '../../store/slices/commentSlice';
 
-const CommentForm = ({videoId, commentId=null, parentComment=null, initialContent="", operation = "add", onFinish }) => {
+
+const CommentForm = ({comment, videoId}) => {
+
   const dispatch = useDispatch();
-  const {loading} = useSelector((state) => state.comment);
-  const [content, setContent] = useState(initialContent);
+  const [expand, setExpand] = useState(false);
+  const [editContent, setEditContent] = useState(comment.content);
+  const [replyMode, setReplyMode] = useState(false);
+  const [replyContent, setReplyContent] = useState("");
 
-  // When initialContent is change then render it using useEffect()
-  useEffect(() => {
-    setContent(initialContent)
-  }, [initialContent]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!content.trim()) return;
-
-    if (operation === "add") {
-      await dispatch(insertComment(videoId, content, parentComment))
-    } else if (operation === "edit" && commentId) {
-      await dispatch(editComment(commentId, content))
-    }
-
-    setContent("")
-
-    if (onFinish) onFinish();
+  const handleCommentReply = () => {
+    dispatch(addReply({
+      commentId: comment._id, 
+      content: replyContent 
+    }));
+    setReplyContent("");
+    setReplyMode(false);
   }
 
+  const handleCommentEdit = async() => {
+    dispatch(
+      editComment({
+        commentId: comment._id, 
+        content: editContent,
+      })
+    )
+    console.log(comment.content);
+
+    setExpand(false);
+  }
+
+  const handleDeleteComment = () => {
+    dispatch(deletedComment({videoId, commentId: comment._id}))
+  }
+
+  const handleChange = (e) => {
+    if (expand) {
+      setEditContent(e.target.value)
+    } else {
+      setReplyContent(e.target.value)
+    }
+  }
+
+  const toggleExpand = () => {
+    setExpand(!expand);
+  }
+
+  const toggleReply = () => {
+    setReplyMode(!replyMode);
+  }
+
+  useEffect(() => {
+    setEditContent(comment.content);
+  }, [comment.content]);
+  
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 items-center mt-2 mb-2 mx-3">
-      < Input
-        type="text"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Add Comment"
-        className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg outline-none focus:ring focus:ring-blue-500"
-      />
-      <Button type="submit" disabled={loading || !content.trim()}>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon"><path d="M8.99992 16V6.41407L5.70696 9.70704C5.31643 10.0976 4.68342 10.0976 4.29289 9.70704C3.90237 9.31652 3.90237 8.6835 4.29289 8.29298L9.29289 3.29298L9.36907 3.22462C9.76184 2.90427 10.3408 2.92686 10.707 3.29298L15.707 8.29298L15.7753 8.36915C16.0957 8.76192 16.0731 9.34092 15.707 9.70704C15.3408 10.0732 14.7618 10.0958 14.3691 9.7754L14.2929 9.70704L10.9999 6.41407V16C10.9999 16.5523 10.5522 17 9.99992 17C9.44764 17 8.99992 16.5523 8.99992 16Z"></path></svg>
-      </Button>
-      {onFinish && (
-        <Button type="button" onClick={onFinish} className="ml-2 bg-red-600 hover:bg-red-700">
-          Cancel
-        </Button>
-      )}
-    </form>
+    <div className=''>
+      <div
+        key={comment._id}
+        className="bg-neutral-800 rounded-2xl p-4 flex gap-3 text-white"
+      >
+        {/* Avatar */}
+        <img
+          src={comment.owner?.avatar || "/avatar.png"}
+          alt={comment.owner?.username}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+
+        {/* Comment Content */}
+        <div className="flex-1">
+          <div className="font-semibold">{comment.owner?.username}</div>
+          
+          
+
+          {!expand ? <div>
+            <p className="text-gray-300 mt-1 whitespace-pre-wrap">
+              {comment.content}
+            </p>
+          </div> : (
+            <div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={editContent}
+                  onChange={handleChange}
+                  className="flex-1 bg-neutral-800 border-none text-white rounded-full px-4 py-2"
+                />
+                <Button
+                  type="submit"
+                  onClick={handleCommentEdit}
+                  // disabled={loading || !content.trim()}
+                  className="rounded-full bg-blue-500 text-white px-4 py-2 hover:bg-blue-600"
+                >
+                  Send
+                </Button>
+              </div>
+            </div>
+          ) }
+          {/* Actions */}
+          <div className="flex gap-4 items-center text-xs text-gray-400 mt-2">
+            <Button
+              size="sm"
+              variant="ghost"
+              className={`flex items-center gap-1 ${
+                comment.isLiked ? "text-blue-400" : "hover:text-blue-400"
+              }`}
+            >
+          👍 {comment.likeCount}
+            </Button>
+            <button className="hover:text-gray-200" onClick={toggleReply}>Reply</button>
+            <button className="hover:text-gray-200" onClick={toggleExpand}>Edit</button>
+            <button className="hover:text-red-400" onClick={() =>
+              dispatch(
+                deletedComment({
+                  videoId,
+                  commentId: comment._id,
+                })
+              )
+            }>Delete</button>
+          </div>
+          { replyMode && (
+            <div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={replyContent}
+                  onChange={handleChange}
+                  className="flex-1 bg-neutral-800 border-none text-white rounded-full px-4 py-2"
+                />
+                <Button
+                  type="submit"
+                  onClick={handleCommentReply}
+                  // disabled={loading || !content.trim()}
+                  className="rounded-full bg-blue-500 text-white px-4 py-2 hover:bg-blue-600"
+                >
+                  Send
+                </Button>
+              </div>
+            </div>
+          )}
+          {comment.replies &&
+            comment.replies?.map((reply) => (
+              <CommentForm key={reply._id} comment={reply} videoId={videoId} />
+            ))
+          }
+        </div>
+      </div>  
+    </div>
   )
 }
 

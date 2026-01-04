@@ -7,7 +7,7 @@ import store from './store/store.js';
 // import Home from './pages/Home.jsx';
 import Signup from './pages/Signup.jsx';
 import Login from './pages/Login.jsx';
-import { AuthLayout, UploadVideo, ChangePassword, UserProfile, WatchHistory, HomePage, VideoList } from './component/index.js';
+import { AuthLayout, UploadVideo, ChangePassword, UserProfile, WatchHistory, HomePage, VideoList, CommentForm, CommentList, Watch } from './component/index.js';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 // import UpdateAccount from './component/index.js';
@@ -82,15 +82,25 @@ const initialState = createBrowserRouter([
         element: (
           <VideoList />
         )
+      },
+      {
+        path: '/comment',
+        element: (
+            <CommentForm/>
+        )
+      },
+      {
+        path: '/commentList',
+        element: (
+            <CommentList/>
+        )
+      },
+      {
+        path: '/watch',
+        element: (
+          <Watch />
+        )
       }
-    //   {
-    //     path: '/channelDetail',
-    //     element: (
-    //       <AuthLayout authentication={false}>
-    //         <Signup/>
-    //       </AuthLayout>
-    //     )
-    //   },
     //   {
     //     path: '/signup',
     //     element: (

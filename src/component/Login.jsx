@@ -80,13 +80,19 @@ function Login() {
             }
         })}
         />
-        <Input 
-          label="Password" type="password"
-          placeholder="Enter your password"
-          {...register("password", {
-            required: true,
-          })}
-        />
+
+        <div>
+          <Input 
+            label="Password" type="password"
+            placeholder="Enter your password"
+            {...register("password", {
+              required: true,
+            })}
+          />
+          <Link to='/changePassword' className="gap-y-4">
+            Change Password
+          </Link>
+        </div>
       
         <Button type="submit" className="w-full" disabled={loading} >
             {loading ? "Signing in..." : "Sign in"}
