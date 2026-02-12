@@ -16,7 +16,7 @@ import UserChannel from './userComponent/UserChannel.jsx';
 import WatchHistory from './userComponent/WatchHistory.jsx';
 import VideoDashboard from './videoComponent/VideoDashboard.jsx';
 import VideoFeed from './videoComponent/VideoFeed.jsx';
-import VideoList from './videoComponent/videoList.jsx';
+import VideoList from './videoComponent/VideoList.jsx';
 import Watch from './videoComponent/Watch.jsx';
 import CommentForm from './commentComponent/CommentForm.jsx';
 import CommentList from './commentComponent/CommentList.jsx';
