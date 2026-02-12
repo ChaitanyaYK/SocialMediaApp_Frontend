@@ -47,7 +47,6 @@ const deletedRecursive = (comments, commentId) => {
   })
 }
 
-/* ======================= THUNKS ======================= */
 
 export const fetchVideoComments = createAsyncThunk(
   "comments/fetchVideoComments",
@@ -105,7 +104,6 @@ export const editComment = createAsyncThunk(
   async ({ commentId, content }, { rejectWithValue }) => {
     try {
       const response = await axios.patch(`/comments/c/${commentId}`, { content });
-      // console.log("_id:",_id, " video:",video, " content:",content);
       
       return response.data.data;
     } catch (error) {
@@ -119,9 +117,7 @@ export const editComment = createAsyncThunk(
 export const deletedComment = createAsyncThunk(
   "comments/deletedComment",
   async ({ videoId, commentId }, { rejectWithValue }) => {
-    try {
-      console.log("videoId", videoId, "commentId", commentId);
-      
+    try { 
       await axios.delete(`/comments/c/${commentId}`);
       return { videoId, commentId };
     } catch (error) {
@@ -132,7 +128,7 @@ export const deletedComment = createAsyncThunk(
   }
 );
 
-/* ======================= SLICE ======================= */
+
 
 const commentSlice = createSlice({
   name: "comment",
@@ -208,180 +204,3 @@ const commentSlice = createSlice({
 });
 
 export default commentSlice.reducer;
-
-
-
-
-
-
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from "axios";
-
-// axios.defaults.withCredentials = true;
-
-// // export const fetchVideoComments = (videoId, page = 1, limit = 10, query= "", sortBy ="newest" ) => async (dispatch) => {
-// //     try {
-// //         dispatch(setLoading());
-// //         const { data } = await axios.get(`/api/comments/${videoId}`, {
-// //             params: { page, limit, query, sortBy },
-// //         });
-// //         console.log(data);       
-// //         dispatch(getVideoComments({comments: data.data.comments, pagination: data.data.pagination}))
-// //     } catch (error) {
-// //         dispatch(setError(error?.response?.data?.message || "Error in fetching comment"));
-// //     }
-// // }
-
-// export const fetchVideoComments = createAsyncThunk('comments/fetchVideoComments', async({videoId}, {rejectWithValue}) => {
-//     try {
-//         const response = await axios.get(`/comments/${videoId}`);
-//         console.log("slice response: ", response.data);
-//         return response.data.data.comments;
-//     } catch (error) {
-//         return rejectWithValue(error.response.data.message || "Error occured while fetching Data");
-//     }
-// })
-
-// export const insertComment = createAsyncThunk('comments/insertComment', async({videoId, content}, {rejectWithValue}) => {
-//     try {
-//         const response = await axios.post(`/comments/${videoId}`,  {content});
-//         return response.data.data;
-//     } catch (error) {
-//         return rejectWithValue(error?.response?.data?.message || "Error in creating comment");
-//     }
-// })
-
-// export const editComment = createAsyncThunk('comments/editComment', async({commentId, content}, {rejectWithValue})=> {
-//     try {
-//         const response = await axios.patch(`/comments/c/${commentId}`, {content});
-//         return response.data.data.comments;
-//     } catch (error) {
-//         return rejectWithValue(error?.response?.data?.message || "Error in updating comment");
-//     }
-// })
-
-// export const deletedComment = createAsyncThunk('comments/deletedComment', async(commentId, {rejectWithValue})=> {
-//     try {
-//         const response = await axios.delete(`/comment/c/${commentId}`);
-//         return response.data.data.comments;
-//     } catch (error) {
-//         return rejectWithValue(error?.response?.data?.message || "Error in deleting comment");
-//     }
-// })
-
-// const commentSlice = createSlice({
-//     name: 'comment',
-//     initialState: {
-//         comments: [],
-//         // pagination: {
-//         //     totalComments: 0,
-//         //     page: 1,
-//         //     limit: 10,
-//         //     totalPages: 0,
-//         // },
-//         error: null,
-//         isError: false,
-//         // isAuthenticated: false,
-//         loading: false
-//     },
-//     reducers: {
-//         setLoading: (state) => {
-//             state.loading = true;
-//             state.error = null;
-//             state.isError = false;
-//         },
-
-//         // addComment: (state, action) => {
-//         //     state.comments = [action.payload, ...state.comments];  // prepend new comment
-//         //     state.error = null;
-//         //     state.loading = false;
-//         //     state.isAuthenticated = true;
-//         // },
-
-//         // getVideoComments: (state, action) => {
-//         //     state.comments = action.payload;
-//         //     state.error = null;
-//         //     state.loading = false;
-//         //     state.isAuthenticated = true;
-//         // },
-
-//         // updateComment: (state, action) => {
-//         //     const {id, updatedComment} = action.payload;
-//         //     state.comments = state.comments.map((comment) => 
-//         //         comment.id === id ? {  ...comment, ...updateComment } : comment
-//         //     );
-//         //     state.error = null;
-//         //     state.loading = false;
-//         //     state.isAuthenticated = true;
-//         // },
-
-//         // deleteComment: (state, action) => {
-//         //     state.comments = state.comments.filter((comment) => comment.id !== action.payload);
-//         //     state.error = null;
-//         //     state.loading = false;
-//         //     state.isAuthenticated = true;
-//         // },
-
-//         setError: (state, action) => {
-//             state.loading = false;
-//             state.error = action.payload;
-//             state.isError = true;
-//         },
-//     },
-//     extraReducers: (builder) => {
-//     builder
-//         .addCase(fetchVideoComments.pending, (state) => {
-//             state.loading = true;
-//         })
-//         .addCase(fetchVideoComments.fulfilled, (state, action) => {
-//             state.loading = false;
-//             state.comments = action.payload;
-//         })
-//         .addCase(fetchVideoComments.rejected, (state, action) => {
-//             state.loading = false;
-//             state.error = action.payload;
-//         })
-
-//         .addCase(insertComment.pending, (state) => {
-//             state.loading = true;
-//         })
-//         .addCase(insertComment.fulfilled, (state, action) => {
-//             state.loading = false;
-//             state.comments.unshift(action.payload);
-//         })
-//         .addCase(insertComment.rejected, (state, action) => {
-//             state.loading = false;
-//             state.error = action.payload;
-//         })
-
-//         .addCase(editComment.pending, (state, action) => {
-//             state.loading = true;
-//         })
-//         .addCase(editComment.fulfilled, (state, action) => {
-//             state.loading = false;
-//             const { _id, content } = action.payload;
-//             const comment = state.comments.find(comment => comment._id === _id);
-//             if (comment) comment.content = content;
-//         })
-//         .addCase(editComment.rejected, (state, action) => {
-//             state.error = action.payload;
-//         })
-
-//          .addCase(deletedComment.pending, (state, action) => {
-//             state.loading = true;
-//         })
-//         .addCase(deletedComment.fulfilled, (state, action) => {
-//             state.loading = false;
-//             state.comments = state.comments.filter(
-//                 (comment) => comment._id !== action.payload._id
-//             );
-//         })
-//         .addCase(deletedComment.rejected, (state, action) => {
-//             state.error = action.payload;
-//         })
-//     }
-// });
-
-// export const {setError, setLoading} = commentSlice.actions;
-
-// export default commentSlice.reducer;

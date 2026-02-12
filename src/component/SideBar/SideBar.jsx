@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from "react";
-import {Home, LogOut, Menu, Settings, User, LogIn, TvMinimalPlayIcon, CreativeCommons} from "lucide-react";
+import {Home, LogOut, Menu, Settings, User, LogIn, TvMinimalPlayIcon, CreativeCommons, LucideArrowUpLeftFromSquare, ListCheck} from "lucide-react";
 import Button from "../Button";
 import { Link } from "react-router-dom";
-import {VideoList} from "../index.js"
+import {VideoList, WatchHistory} from "../index.js";
+import LikedVideos from "../../pages/LikedVideos.jsx";
 
-const SideBar = () => {
-    const [open, setOpen] = useState(true);
+const SideBar = ({open, setOpen}) => {
 
     // // Collapse sidebar when it is small screens
     useEffect(() => {
@@ -27,10 +27,11 @@ const SideBar = () => {
    const navItems = [
     { name: "Home", icon: Home, path: "/" },
     { name: "Profile", icon: User, path: "/userProfile" },
-    { name: "Login", icon: LogIn , path: "/login" },
-    { name: "VideoList", icon: TvMinimalPlayIcon, path: "/fetchVideos"},
-    { name: "Comment", icon: CreativeCommons, path: "/comment"},
-    { name: "CommentList", icon: CreativeCommons, path: "/commentList"}
+    { name: "WatchHistory", icon: TvMinimalPlayIcon, path: "/watchHistory"},
+    { name: "LikedVideos", icon: CreativeCommons, path: "/likevideos"},
+    { name: "UploadVideo", icon: LucideArrowUpLeftFromSquare, path: "/publishVideo"},
+    { name: "Channel", icon: LucideArrowUpLeftFromSquare, path: "/channel"},
+    { name: "PlaylistGrid", icon: ListCheck, path: "/playlist"}
   ];
 
   return (
@@ -48,7 +49,7 @@ const SideBar = () => {
           <Link
             to={path}
             key={name}
-            className={`flex items-center gap-3 px-4 py-2 rounded-sm text-gray-300 hover:bg-gray-800 border-4 border-b-gray-600 border-l-gray-800 hover:text-white transition ${({isActive}) => { isActive ? "bg-sky-600" : ""}}`}
+            className={`flex items-center gap-3 px-4 py-2 rounded-sm text-gray-700 hover:bg-gray-800 border-4 border-b-gray-600 border-l-gray-800 hover:text-white transition ${({isActive}) => { isActive ? "bg-sky-600" : ""}}`}
           >
             <Icon className="w-5 h-5" />
             {open && <span>{name}</span>}

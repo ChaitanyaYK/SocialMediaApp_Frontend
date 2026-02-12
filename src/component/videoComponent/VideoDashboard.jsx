@@ -9,8 +9,6 @@ const VideoDashboard = () => {
     const navigate = useNavigate();
 
     const {videos, loading, pagination, error} = useSelector((state) => state.video);
-    // console.log(s);
-    
 
     useEffect(() => {
         dispatch(fetchVideos({page: 1, limit: 10}));

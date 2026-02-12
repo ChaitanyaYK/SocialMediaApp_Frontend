@@ -4,7 +4,7 @@ function Button({
     children,  //children is a simple text
     type = 'button',
     rounded = 'rounded-sm',
-    bgColor = 'bg-neutral-800',
+    bgColor = 'bg-neutral-800 hover:bg-neutral-600',
     textColor = 'text-white',
     className = '',
     ...props
@@ -12,7 +12,7 @@ function Button({
     const id = useId();
 
     return (
-        <button className={`px-4 py-2 flex items-center cursor-pointer hover:cursor-pointer ${bgColor} ${textColor} ${rounded}`} {...props}>
+        <button className={`flex items-center cursor-pointer hover:cursor-pointer ${className} ${bgColor} ${textColor} ${rounded}`} {...props}>
             {children}
         </button>
     )

@@ -1,4 +1,4 @@
-import React, {useId} from 'react'
+import React, {useId} from 'react';
 // focus:bg-gray-50
 const Input = function Input({
     label,

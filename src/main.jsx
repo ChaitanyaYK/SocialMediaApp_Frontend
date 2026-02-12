@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
@@ -7,24 +7,27 @@ import store from './store/store.js';
 // import Home from './pages/Home.jsx';
 import Signup from './pages/Signup.jsx';
 import Login from './pages/Login.jsx';
-import { AuthLayout, UploadVideo, ChangePassword, UserProfile, WatchHistory, HomePage, VideoList, CommentForm, CommentList, Watch } from './component/index.js';
+import { AuthLayout, UploadVideo, ChangePassword, UserProfile, UserChannel, WatchHistory, HomePage, VideoList, CommentForm, CommentList, Watch, SideBar, PlaylistGrid, UpdatePlaylist, VideoDashboard } from './component/index.js';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-// import UpdateAccount from './component/index.js';
+import LikedVideos from './pages/LikedVideos.jsx';
+import PlaylistPage from './component/PlayList/PlaylistPage.jsx';
 
 // import { ApiProvider } from '@reduxjs/toolkit/query/react'; // optional for redux store provide it give api={} like provider give store={}
 
 const initialState = createBrowserRouter([
   {
-    path: '/',
-    element: <App />,
+    path: "/",
+    element: (
+        <App />
+    ),
     children: [
       {
-        path: '/',
+        path: "/",
         element: <HomePage/>
       },
       {
-        path: '/login',
+        path: "/login",
         element: (
           <AuthLayout authentication={false}>
             <Login/>
@@ -32,7 +35,7 @@ const initialState = createBrowserRouter([
         )
       },
       {
-        path: '/signup',
+        path: "/signup",
         element: (
           <AuthLayout authentication={false}>
             <Signup/>
@@ -40,7 +43,7 @@ const initialState = createBrowserRouter([
         )
       },
       {
-        path: '/changePassword',
+        path: "/changePassword",
         element: (
           <AuthLayout authentication={false}>
             <ChangePassword />
@@ -48,7 +51,7 @@ const initialState = createBrowserRouter([
         )
       },
       {
-        path: '/publishVideo',
+        path: "/publishVideo",
         element: (
           <AuthLayout authentication={true}>
             <UploadVideo/>
@@ -64,7 +67,7 @@ const initialState = createBrowserRouter([
       //   )
       // },
       {
-        path: '/userProfile',
+        path: "/userProfile",
         element: (
           // <AuthLayout authentication={true}>
             <UserProfile />
@@ -72,33 +75,75 @@ const initialState = createBrowserRouter([
         )
       },
       {
-        path: '/watchHistory',
+        path: "/watchHistory",
         element: (
           <WatchHistory />
         )
       },
       {
-        path: '/fetchVideos',
+        path: "/fetchVideos",
         element: (
           <VideoList />
         )
       },
       {
-        path: '/comment',
+        path: "/comment",
         element: (
             <CommentForm/>
         )
       },
       {
-        path: '/commentList',
+        path: "/commentList",
         element: (
             <CommentList/>
         )
       },
       {
-        path: '/watch',
+        path: "/watch/:videoId",
         element: (
           <Watch />
+        )
+      },
+      {
+        path: "/likevideos",
+        element: (
+          <LikedVideos />
+        )
+      },
+      {
+        path: "/channel",
+        element: (
+          <UserChannel />
+        )
+      },
+      {
+        path: "/channel/:username",
+        element: (
+          <UserChannel />
+        )
+      },
+      {
+        path: "/playlist",
+        element: (
+          <PlaylistGrid />
+        )
+      },
+      {
+        path: "/playlist/:playlistId",
+        element: (
+          <PlaylistPage />
+        )
+      },
+      {
+        path: "/playlist/:playlistId/edit",
+        element: (
+            <UpdatePlaylist />
+        )
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <VideoDashboard />
         )
       }
     //   {

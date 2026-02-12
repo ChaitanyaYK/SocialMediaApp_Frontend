@@ -7,6 +7,7 @@ import { changePassword } from "../../store/slices/authSlice.js";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { Eye, EyeOff } from "lucide-react";
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
@@ -54,30 +55,7 @@ const ChangePassword = () => {
 
   // SVG icons
   const EyeIcon = ({ open }) =>
-    open ? (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-5 h-5 text-gray-300"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
-        <circle cx="12" cy="10" r="3" />
-      </svg>
-    ) : (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-5 h-5 text-gray-300"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.68 21.68 0 0 1 5.11-6.31m3.25-2A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-4.35 5.94M1 1l22 22" />
-      </svg>
-    );
+    open ? (<Eye />) : (<EyeOff/>);
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -108,7 +86,7 @@ const ChangePassword = () => {
               <button
                 type="button"
                 onClick={() => setShowOld(!showOld)}
-                className="absolute right-0 top-7"
+                className="absolute right-1 top-9"
               >
                 <EyeIcon open={showOld} />
               </button>
@@ -135,7 +113,7 @@ const ChangePassword = () => {
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute right-0 top-7"
+                className="absolute right-1 top-9"
               >
                 <EyeIcon open={showNew} />
               </button>
@@ -159,15 +137,17 @@ const ChangePassword = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-0 top-7"
+                className="absolute right-1 top-9"
               >
                 <EyeIcon open={showConfirm} />
               </button>
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating Password..." : "Create Password"}
-            </Button>
+            <div className="flex justify-center">
+              <Button type="submit" className="px-2 py-3" disabled={loading}>
+                {loading ? "Creating Password..." : "Create Password"}
+              </Button>
+            </div>
           </div>
         </form>
       </div>

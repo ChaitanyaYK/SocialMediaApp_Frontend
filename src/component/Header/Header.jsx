@@ -123,8 +123,6 @@ const Header = () => {
           <div className="flex">
             <Button onClick={() => {
               setClick(!click);
-              
-              console.log("button clicked", click);
             }} className="" bgColor="bg-neutral-800 hover:bg-neutral-700 h-10"><FaPlus className="mr-1.5 size-7"/>Create</Button>
             
             <Button bgColor="bg-gray-900"><IoNotificationsOutline className="rounded-l-4xl h-10 w-10 hover:bg-gray-800 p-2"  color="white"/></Button> */}

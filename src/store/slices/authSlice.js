@@ -5,7 +5,7 @@ import axios from "axios";
 
 // Axios default config
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = '/api';
+axios.defaults.baseURL = '/api/v1';
 
 
 // --- Async Thunks ---
@@ -57,7 +57,7 @@ export const getCurrentUser = createAsyncThunk(
       const response = await axios.get("/user/current-user");
       return response.data.data;
     } catch (err) {
-      // console.log(err);
+
       return rejectWithValue(err?.response?.data?.message || err.message);
     }
   }
@@ -128,6 +128,7 @@ export const getChannelProfile = createAsyncThunk(
   async (username, {rejectWithValue}) => {
     try {
       const response = await axios.get(`/user/c/${username}`);
+      
       return response.data.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data?.message || err.message);

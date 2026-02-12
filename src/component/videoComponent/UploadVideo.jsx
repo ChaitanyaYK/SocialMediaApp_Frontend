@@ -18,16 +18,16 @@ function UploadVideo({ isEdit = false, video = {} }) {
     watch,
     setValue,
     formState: { errors },
-  } = useForm({
+    } = useForm({
       defaultValues: {
       title: video?.title || "",
       description: video?.description || "",
-        isPublished: video?.isPublished || false,
+      isPublished: video?.isPublished || false,
     },
-    });
+  });
 
   // const watchedThumbnail = watch("thumbnail");
-    const watchedPublished = watch("isPublished");
+  const watchedPublished = watch("isPublished");
 
   const [previewVideo, setPreviewVideo] = useState(null);
   const [previewThumb, setPreviewThumb] = useState(video?.thumbnail || null);
@@ -64,9 +64,9 @@ function UploadVideo({ isEdit = false, video = {} }) {
     }, 300);
   };
 
-    const submit = async (data) => {
-      try {
-        const formData = new FormData();
+  const submit = async (data) => {
+    try {
+      const formData = new FormData();
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("isPublished", data.isPublished);
@@ -79,11 +79,11 @@ function UploadVideo({ isEdit = false, video = {} }) {
 
       simulateProgress();
 
-        if (isEdit) {
-        await dispatch(updateVideo({ videoId: video._id, videoData: formData }));
-        } else {
-          await dispatch(publishVideo(formData));
-      }
+        // if (isEdit) {
+        //   await dispatch(updateVideo({ videoId: video._id, videoData: formData }));
+        // } else {
+        // }
+        await dispatch(publishVideo(formData));
 
       navigate("/");
     } catch (error) {
@@ -98,17 +98,25 @@ function UploadVideo({ isEdit = false, video = {} }) {
       </h2>
 
       <form onSubmit={handleSubmit(submit)} className="space-y-6">
-        {/* Drag & Drop Video Upload */}
+      
         {!isEdit && (
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 transition">
             <input
               type="file"
               accept="video/*"
-              {...register("videoFile", { required: "Video file is required" })}
+              {...register("videoFile", { 
+                required: "Video file is required", 
+                onChange: (e) => handleVideoPreview(e.target.files[0]),
+               },
+              )}
               className="hidden"
               id="video-upload"
-              onChange={(e) => handleVideoPreview(e.target.files[0])}
             />
+            {errors.videoFile && (
+              <p className="text-red-400 text-sm mt-2">
+                {errors.videoFile.message}
+              </p>
+            )}
             <label htmlFor="video-upload" className="block">
               {previewVideo ? (
                 <video
@@ -123,28 +131,28 @@ function UploadVideo({ isEdit = false, video = {} }) {
                 </div>
               )}
             </label>
-            {errors.videoFile && (
-              <p className="text-red-400 text-sm mt-2">
-                {errors.videoFile.message}
-              </p>
-            )}
+            
           </div>
         )}
 
-        {/* Title */}
+ 
     <div>
       <Input
             placeholder="Enter video title"
             label="Title"
-            {...register("title", { required: "Title is required" })}
+            {...register("title", { 
+              required: "Title is required",
+            })}
             className="w-full"
           />
           {errors.title && (
-            <p className="text-red-400 text-sm mt-1">{errors.title.message}</p>
+            <p className="text-red-400 text-sm mt-1">
+              {errors.title.message}
+            </p>
           )}
         </div>
 
-        {/* Description */}
+      
         <div>
           <textarea
             {...register("description", { required: "Description is required" })}
@@ -159,14 +167,15 @@ function UploadVideo({ isEdit = false, video = {} }) {
           )}
         </div>
 
-        {/* Thumbnail Upload */}
+
         <div>
-        <Input
-          type="file"
+          <Input
+            type="file"
             label="Thumbnail Image"
-        accept="image/png, image/jpg, image/jpeg, image/gif"
-            {...register("thumbnail")}
-            onChange={(e) => handleThumbPreview(e.target.files[0])}
+            accept="image/png, image/jpg, image/jpeg, image/gif"
+            {...register("thumbnail", ondrop = (e) => {handleThumbPreview(e.target.target.files[0])},
+              {onChange: (e) => handleThumbPreview(e.target.files[0])}
+            )}
             className="w-full"
           />
           {previewThumb && (
@@ -181,7 +190,7 @@ function UploadVideo({ isEdit = false, video = {} }) {
           )}
         </div>
 
-        {/* Publish Checkbox */}
+
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
@@ -193,7 +202,7 @@ function UploadVideo({ isEdit = false, video = {} }) {
           <label className="text-white">Publish immediately</label>
         </div>
 
-        {/* Upload Progress */}
+       
         {uploadProgress > 0 && (
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div
@@ -203,13 +212,15 @@ function UploadVideo({ isEdit = false, video = {} }) {
         </div>
       )}
 
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          className="w-full rounded-xl py-3 font-semibold text-lg bg-blue-600 hover:bg-blue-700 text-white"
-        >
-          {isEdit ? "Update Video" : "Publish Video"}
-      </Button>
+
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            className="rounded-b-md p-2.5 font-semibold text-lg bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            {isEdit ? "Update Video" : "Publish Video"}
+          </Button>
+        </div>
       </form>
     </div>
   );

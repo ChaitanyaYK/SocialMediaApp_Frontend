@@ -80,7 +80,7 @@ function Signup() {
         )}
 
         <form onSubmit={handleSubmit(create)} className="mt-6 space-y-5">
-          {/* Full Name */}
+          
           <div>
             <Input
               label="Full Name"
@@ -94,7 +94,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Username */}
+
           <div>
             <Input
               label="Username"
@@ -108,7 +108,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Email */}
+        
           <div>
             <Input
               label="Email"
@@ -131,7 +131,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Password */}
+
           <div>
             <Input
               label="Password"
@@ -154,7 +154,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Avatar */}
+
           <div>
             <Input
               label="Avatar"
@@ -169,7 +169,7 @@ function Signup() {
             )}
           </div>
 
-          {/* Cover Image */}
+          
           <div>
             <Input
               label="Cover Image"
@@ -179,14 +179,15 @@ function Signup() {
             />
           </div>
 
-          {/* Submit */}
-          <Button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={loading}
-          >
-            {loading ? "Creating..." : "Create Account"}
-          </Button>
+          <div className="flex justify-center">
+            <Button
+              type="submit"
+              className="px-2 py-3 bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Create Account"}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

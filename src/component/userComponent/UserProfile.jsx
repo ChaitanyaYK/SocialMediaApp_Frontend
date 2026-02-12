@@ -21,7 +21,6 @@ const UserProfile = () => {
 
   
   const {subscribers, subscriptions, totalSubscribers, totalChannels, isSubscribed} = useSelector((state) => state.subscription );
-  console.log("Subcription: ",subscribers);
 
   const {
     register,
@@ -85,7 +84,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="w-full bg-zinc-900 min-h-screen text-white">
+    <div className="w-full m-6 bg-zinc-900 min-h-screen text-white">
       {/* Cover Image */}
       <div className="relative w-full h-48 bg-gray-700">
         {profile?.coverImage && (
@@ -103,7 +102,7 @@ const UserProfile = () => {
             // <Link>
             // </Link>
           <img
-                src={profile.avatar}
+            src={profile.avatar}
             alt="avatar"
             className="w-24 h-24 rounded-full border-4 border-white object-cover"
           />
@@ -166,8 +165,8 @@ const UserProfile = () => {
           />
         </div>
 
-        <div className="w-full flex justify-center mt-8">
-          <Button type="submit" disabled={loading}>
+        <div className="flex justify-center mt-8">
+          <Button type="submit" disabled={loading} className='p-3'>
             {loading ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
@@ -193,7 +192,7 @@ const UserProfile = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Subscriptions</h3>
           <div className="flex gap-4 flex-wrap">
-            {subscriptions?.length > 0 && subscriptions?.map((sub, idx) => (
+            {profile?.subscribedTo?.length > 0 && profile?.subscribedTo?.map((sub, idx) => (
               <div key={idx} className="flex flex-col items-center">
                 <img
                   src={sub.avatar}

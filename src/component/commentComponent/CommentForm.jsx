@@ -1,17 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import {Button, Input} from '../index';
+import {Button, Input, AddComment} from '../index';
 import { useDispatch, useSelector } from 'react-redux';
 import { editComment, addReply, deletedComment } from '../../store/slices/commentSlice';
+import {toggleCommentLiked} from '../../store/slices/likeSlice.js'
+import {LikeIcon} from "../index.js";
 
 
 const CommentForm = ({comment, videoId}) => {
 
   const dispatch = useDispatch();
+  const {likeByCommentId} = useSelector((state) => state.likes);
   const [expand, setExpand] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [replyMode, setReplyMode] = useState(false);
   const [replyContent, setReplyContent] = useState("");
-
+  let liked;
   const handleCommentReply = () => {
     dispatch(addReply({
       commentId: comment._id, 
@@ -28,12 +31,12 @@ const CommentForm = ({comment, videoId}) => {
         content: editContent,
       })
     )
-    console.log(comment.content);
 
     setExpand(false);
   }
 
   const handleDeleteComment = () => {
+    
     dispatch(deletedComment({videoId, commentId: comment._id}))
   }
 
@@ -43,6 +46,11 @@ const CommentForm = ({comment, videoId}) => {
     } else {
       setReplyContent(e.target.value)
     }
+  }
+
+  const handleCommentLike = (e) => {
+    e.stopPropagation();
+    dispatch(toggleCommentLiked(comment._id))
   }
 
   const toggleExpand = () => {
@@ -58,10 +66,10 @@ const CommentForm = ({comment, videoId}) => {
   }, [comment.content]);
   
   return (
-    <div className=''>
+    <div className='min-w-fit'>
       <div
         key={comment._id}
-        className="bg-neutral-800 rounded-2xl p-4 flex gap-3 text-white"
+        className="bg-neutral-800 rounded-2xl p-2 flex  gap-1 text-white mt-1 border-2 hover:border-gray-400 overflow-x-clip"
       >
         {/* Avatar */}
         <img
@@ -71,7 +79,7 @@ const CommentForm = ({comment, videoId}) => {
         />
 
         {/* Comment Content */}
-        <div className="flex-1">
+        <div className="flex-1 ">
           <div className="font-semibold">{comment.owner?.username}</div>
           
           
@@ -81,67 +89,33 @@ const CommentForm = ({comment, videoId}) => {
               {comment.content}
             </p>
           </div> : (
-            <div>
-              <div className="flex items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={editContent}
-                  onChange={handleChange}
-                  className="flex-1 bg-neutral-800 border-none text-white rounded-full px-4 py-2"
-                />
-                <Button
-                  type="submit"
-                  onClick={handleCommentEdit}
-                  // disabled={loading || !content.trim()}
-                  className="rounded-full bg-blue-500 text-white px-4 py-2 hover:bg-blue-600"
-                >
-                  Send
-                </Button>
-              </div>
+            <div >
+              <AddComment content={editContent} handleContent={handleChange} handleComment={handleCommentEdit}/>
             </div>
           ) }
           {/* Actions */}
-          <div className="flex gap-4 items-center text-xs text-gray-400 mt-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              className={`flex items-center gap-1 ${
-                comment.isLiked ? "text-blue-400" : "hover:text-blue-400"
-              }`}
-            >
-          👍 {comment.likeCount}
-            </Button>
-            <button className="hover:text-gray-200" onClick={toggleReply}>Reply</button>
-            <button className="hover:text-gray-200" onClick={toggleExpand}>Edit</button>
-            <button className="hover:text-red-400" onClick={() =>
-              dispatch(
-                deletedComment({
-                  videoId,
-                  commentId: comment._id,
-                })
-              )
-            }>Delete</button>
+          <div className="flex items-center text-xs text-gray-400 mt-2">
+            <div className='flex flex-1/4 align-middle justify-evenly'>
+              <div>
+                <LikeIcon isLiked={likeByCommentId[comment._id]?.liked} onClick={handleCommentLike} likeCount={likeByCommentId[comment._id]?.likeCount}/>
+              </div>
+              <button className="hover:text-gray-200" onClick={toggleReply}>Reply</button>
+              <button className="hover:text-gray-200" onClick={toggleExpand}>Edit</button>
+              <button className="hover:text-red-400" onClick={() =>
+                dispatch(
+                  deletedComment({
+                    videoId,
+                    commentId: comment._id,
+                  })
+                )
+              }>
+                Delete
+              </button>
+            </div>
           </div>
           { replyMode && (
             <div>
-              <div className="flex items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={replyContent}
-                  onChange={handleChange}
-                  className="flex-1 bg-neutral-800 border-none text-white rounded-full px-4 py-2"
-                />
-                <Button
-                  type="submit"
-                  onClick={handleCommentReply}
-                  // disabled={loading || !content.trim()}
-                  className="rounded-full bg-blue-500 text-white px-4 py-2 hover:bg-blue-600"
-                >
-                  Send
-                </Button>
-              </div>
+              <AddComment content={replyContent} handleContent={handleChange} handleComment={handleCommentReply} />
             </div>
           )}
           {comment.replies &&

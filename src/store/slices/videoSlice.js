@@ -5,7 +5,7 @@ import axios from "axios";
 // If you use cookies for auth (res.cookie('token', ...) in backend), then make sure every Axios request has:
 // Axios default config
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = '/api';
+// axios.defaults.baseURL = '/api';
 
 // const api = axios.interceptors.request.use((config) => {
 //   const token = store.getState().auth?.user?.token;
@@ -55,14 +55,24 @@ export const fetchVideoById = createAsyncThunk(
     }
 )
 
+export const fetchVideoUrl = createAsyncThunk(
+    'video/fetchVideoUrl',
+    async (videoId, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`/videos/geturl/${videoId}`);
+            return response.data.data.url;
+        } catch (error) {
+            return rejectWithValue(error.response.data.message || "Failed to fetch video url");
+        }
+    }
+)
 
 export const publishVideo = createAsyncThunk(
     'video/publishVideo',
     async (videoData, {rejectWithValue, getState}) => {
         try {
-            const formData = createFormData(videoData);
             const token = getState().auth?.user?.token;
-            const response = await axios.post(`/videos`, formData, {
+            const response = await axios.post(`/videos`, videoData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`,
@@ -81,9 +91,8 @@ export const updateVideo = createAsyncThunk(
     'video/updateVideo',
     async ({videoId, videoData}, {rejectWithValue, getState}) => {
         try {
-            const formData = createFormData(videoData);
             const token = getState().auth?.user?.token;
-            const response = await axios.patch(`/videos/${videoId}`, formData, {
+            const response = await axios.patch(`/videos/${videoId}`, videoData, {
                 headers: { 
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`,
@@ -127,6 +136,8 @@ const videoSlice = createSlice({
     name: 'video',
     initialState: {
         videos: [],
+        currVideo: null,
+        signedUrl: null,
         loading: false,
         error: null,
         pagination: {
@@ -135,7 +146,7 @@ const videoSlice = createSlice({
             limit: 10,
             totalPage: 0,
         },
-        fillter: {
+        filter: {
             query: "",
             sortBy: "newest"
         }
@@ -171,8 +182,9 @@ const videoSlice = createSlice({
             state.loading = true;
         })
         .addCase(fetchVideoById.fulfilled, (state, action) => {
-            
             state.loading = false;
+            state.currVideo = action.payload;
+            state.signedUrl = state.currVideo.videoFile.hls_url;
         })
         .addCase(fetchVideoById.rejected, (state, action) => {
             state.loading = false;
@@ -211,9 +223,16 @@ const videoSlice = createSlice({
 
 
         // Delete video
+        .addCase(deleteVideo.pending, (state, action) => {
+            state.loading = true;
+        })
         .addCase(deleteVideo.fulfilled, (state, action) => {
             state.videos = state.videos.filter((video) => video._id !== action.payload._id);
             state.loading = false;
+        })
+        .addCase(deleteVideo.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
         })
 
         // Toggle publish
@@ -225,7 +244,23 @@ const videoSlice = createSlice({
             const index = state.videos.findIndex((video) => video._id === action.payload._id)
             if (index !== -1) state.videos[index] = action.payload;
             state.loading = false;
-        });
+        })
+        .addCase(toggleVideoPublishStatus.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
+
+        .addCase(fetchVideoUrl.pending, (state, action) => {
+            state.loading = true;
+        })
+        .addCase(fetchVideoUrl.fulfilled, (state, action) => {
+            state.loading = false;
+            state.signedUrl = action.payload;
+        })
+        .addCase(fetchVideoUrl.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
     }
 })
 

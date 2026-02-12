@@ -1,4 +1,5 @@
 import React from 'react';
+import {VideoList} from "../index.js"
 
 const HomePage = () => {
   const options = [
@@ -11,7 +12,7 @@ const HomePage = () => {
   return (
     <div>
       <div className="max-w-310 bg-neutral-900 p-2">
-        <div className="flex flex-row overflow-x-auto flex-nowrap space-x-3 scrollbar-hide scrollbar">
+        <div className="flex flex-row flex-nowrap overflow-x-auto space-x-3 ">
           {options.map((option, index) => (
             <div
               key={index}
@@ -20,6 +21,9 @@ const HomePage = () => {
               {option}
             </div>
           ))}
+        </div>
+        <div>
+          <VideoList />
         </div>
       </div>
     </div>

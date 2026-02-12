@@ -11,19 +11,15 @@ function Login() {
     const [error, setError] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {register, handleSubmit} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
 
-    // const [loginUser, {isAuthenticated, isError, error}] = useLoginUserMutation();
-
-    const {isAuthenticated, loading} = useSelector((state) => state.auth.isAuthenticated);
-    // const user = useSelector((state) => {state.auth.user})
-    // console.log(user);
+    const {isAuthenticated, loading} = useSelector((state) => state.auth);
     
 
     const login = async(data) => {
         setError("");
         try {
-        const resultAction = await dispatch(loginUser(data));
+        const resultAction = await dispatch(loginUser(data)).unwrap();
           if (loginUser.fulfilled.match(resultAction)) {
             await dispatch(getCurrentUser());
           }
@@ -43,7 +39,7 @@ function Login() {
       className='flex items-center justify-center w-full relative z-50 backdrop-blur-sm'
     >
       <div className={`mx-auto w-full max-w-lg bg-gray-700 rounded-xl p-10 border border-black/10`}>
-        <div className="mb-2 flex justify-start flex-col">
+        <div className="mb-2 flex justify-center align-middle items-center">
                     <span className="inline-block w-full max-w-[100px]">
                         <Logo width="100%" />
                     </span>
@@ -61,42 +57,75 @@ function Login() {
       {error && <p className='text-red-600 mt-8 text-center'>{error}</p>}
       <form onSubmit={handleSubmit(login)} className="mt-8">
        <div className="space-5-y space-y-4">
-        <Input
-            label="Username"
-            placeholder="Enter your username"
-            {...register("username", {
-                required: true,
-            })}
-        />
-        <Input
-          label="Email"
-          type="email"
-          placeholder="Enter your Email "
-          {...register("email", {
-            required: true,
-            validate: {
-              matchPatern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) ||
-                    "Email address must be a vaild address",
-            }
-        })}
-        />
+        <div>
+          <Input
+              label="Username"
+              placeholder="Enter your username"
+              {...register("username", {
+                  required: "Username is Required!",
+              })}
+          />
+          {errors.username && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.username.message}
+              </p>
+          )}
+        </div>
+        <div>
+          <Input
+            label="Email"
+            type="email"
+            placeholder="Enter your Email "
+            {...register("email", {
+              required: "Email is required",
+               pattern: {
+                  value:
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Invalid email address",
+                  
+                },
+              // validate: {
+              //   matchPatern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value),
+              //         message: "Email address must be a vaild address",
+              // }
+          })}
+          />
+          {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+          )}
+        </div>
 
         <div>
           <Input 
             label="Password" type="password"
             placeholder="Enter your password"
             {...register("password", {
-              required: true,
+              required: "Password is required",
+                pattern: {
+                  value:
+                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%]).{8,20}$/,
+                  message:
+                    "Password must be 8-20 chars, include upper, lower, number & special char",
+                },
             })}
           />
+          {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+          )}
           <Link to='/changePassword' className="gap-y-4">
             Change Password
           </Link>
         </div>
       
-        <Button type="submit" className="w-full" disabled={loading} >
-            {loading ? "Signing in..." : "Sign in"}
-        </Button>
+        <div className="flex justify-center align-middle items-center">
+          <Button type="submit" className="px-3 py-2" disabled={loading} >
+              {loading ? "Signing in..." : "Sign in"}
+          </Button>
+        </div>
         </div>
       </form>
       </div>
