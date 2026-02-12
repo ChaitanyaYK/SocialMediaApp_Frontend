@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createPlaylist, getUserPlaylists, deletePlaylist } from '../../store/slices/playListSlice';
+import { createPlaylist, getUserPlaylists, deletePlaylist } from '../../store/slices/playlistSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import PlaylistCard from './PlaylistCard';
 import { useNavigate } from 'react-router-dom';

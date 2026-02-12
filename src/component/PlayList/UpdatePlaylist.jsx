@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getPlaylistById, updatePlaylist } from "../../store/slices/playListSlice";
+import { getPlaylistById, updatePlaylist } from "../../store/slices/playlistSlice";
 import { ArrowLeft, Save } from "lucide-react";
 import {Button, Input} from "../index.js";
 

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPlaylistById, addVideoToPlaylist, deleteVideoFromPlaylist, deletePlaylist } from '../../store/slices/playListSlice';
+import { getPlaylistById, addVideoToPlaylist, deleteVideoFromPlaylist, deletePlaylist } from '../../store/slices/playlistSlice';
 import { ArrowLeft, Play, Plus, Trash2, PenBox } from 'lucide-react';
 // import {} from "../.."
 
