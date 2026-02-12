@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import api from "../../utils/axios";
 
 axios.defaults.withCredentials = true;
 // axios.defaults.baseURL = '/api';

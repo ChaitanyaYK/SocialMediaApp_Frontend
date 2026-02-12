@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import api from "../../utils/axios";
 
 axios.defaults.withCredentials = true;
 // axios.defaults.baseURL = "/api"
@@ -8,7 +9,7 @@ export const createPlaylist = createAsyncThunk(
     "playlist/createPlaylist",
     async(playlistData, {rejectWithValue}) => {
         try {
-            const response = await axios.post('/playlist', playlistData);
+            const response = await api.post('/playlist', playlistData);
             return response.data.data;
         } catch (error) {
             throw rejectWithValue(error.response?.data?.message || error.message);
@@ -20,7 +21,7 @@ export const updatePlaylist = createAsyncThunk(
     "playlist/updatePlaylist",
     async({playlistData, playlistId}, {rejectWithValue}) => {
         try {
-            const response = await axios.patch(`/playlist/${playlistId}`, playlistData);
+            const response = await api.patch(`/playlist/${playlistId}`, playlistData);
             return response.data.data;
         } catch (error) {
             throw rejectWithValue(error.response?.data?.message || error.message);
@@ -32,7 +33,7 @@ export const getUserPlaylists = createAsyncThunk(
     "playlist/getUserPlaylist",
     async(userId, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`/playlist/user/${userId}`);
+            const response = await api.get(`/playlist/user/${userId}`);
             return response.data.data;
         } catch (error) {
             throw rejectWithValue(error.response?.data?.message || error.message);
@@ -44,7 +45,7 @@ export const getPlaylistById = createAsyncThunk(
     "playlist/getPlaylistById",
     async({playlistId}, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`/playlist/${playlistId}`);
+            const response = await api.get(`/playlist/${playlistId}`);
             return response.data.data;
         } catch (error) {
             throw rejectWithValue(error.response?.data.message || error?.message);
@@ -56,7 +57,7 @@ export const deletePlaylist = createAsyncThunk(
     "playlist/deletePlaylist",
     async({ playlistId}, {rejectWithValue}) => {
         try {
-            const response = await axios.delete(`/playlist/${playlistId}`);
+            const response = await api.delete(`/playlist/${playlistId}`);
             return response.data.data;
         } catch (error) {
             throw rejectWithValue(error.response?.data?.message || error.message);
@@ -68,7 +69,7 @@ export const addVideoToPlaylist = createAsyncThunk(
     "playlist/addVideoToPlaylist",
     async({ playlistId, videoId }, {rejectWithValue}) => {
         try {
-            const response = await axios.patch(`/api/playlist/${playlistId}/video/${videoId}`);
+            const response = await api.patch(`/api/playlist/${playlistId}/video/${videoId}`);
             return response.data.data;
         } catch (error) {
             throw rejectWithValue(error.response?.data?.message || error.message);
@@ -80,7 +81,7 @@ export const deleteVideoFromPlaylist = createAsyncThunk(
     "playlist/deleteVideoFromPlaylist",
     async({ playlistId, videoId }, {rejectWithValue}) => {
         try {
-            const response = await axios.patch(`/playlist/${playlistId}/remove/${videoId}`);
+            const response = await api.patch(`/playlist/${playlistId}/remove/${videoId}`);
             return response.data.data;
         } catch (error) {
             throw rejectWithValue(error.response?.data?.message || error.message);

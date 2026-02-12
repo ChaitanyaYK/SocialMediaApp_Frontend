@@ -1,19 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import api from "../axios";
+import api from "../../utils/axios.js"
 
 // If you use cookies for auth (res.cookie('token', ...) in backend), then make sure every Axios request has:
 // Axios default config
 axios.defaults.withCredentials = true;
 // axios.defaults.baseURL = '/api';
 
-// const api = axios.interceptors.request.use((config) => {
-//   const token = store.getState().auth?.user?.token;
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// })
 
 // Helper to handle FormData for file uploads
 export const createFormData = (data) => {
@@ -33,7 +26,7 @@ export const fetchVideos = createAsyncThunk(
   'video/fetchVideos',
   async ({ page = 1, limit = 10, query = "", sortBy = "newest" }, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/videos', { params: { page, limit, query, sortBy } });
+      const response = await api.get('/videos', { params: { page, limit, query, sortBy } });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch videos");
@@ -47,7 +40,7 @@ export const fetchVideoById = createAsyncThunk(
     'video/fetchVideoById',
     async (videoId, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`/videos/${videoId}`);
+            const response = await api.get(`/videos/${videoId}`);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response.data.message || "Failed to fetch video");
@@ -59,7 +52,7 @@ export const fetchVideoUrl = createAsyncThunk(
     'video/fetchVideoUrl',
     async (videoId, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`/videos/geturl/${videoId}`);
+            const response = await api.get(`/videos/geturl/${videoId}`);
             return response.data.data.url;
         } catch (error) {
             return rejectWithValue(error.response.data.message || "Failed to fetch video url");
@@ -72,7 +65,7 @@ export const publishVideo = createAsyncThunk(
     async (videoData, {rejectWithValue, getState}) => {
         try {
             const token = getState().auth?.user?.token;
-            const response = await axios.post(`/videos`, videoData, {
+            const response = await api.post(`/videos`, videoData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`,
@@ -92,7 +85,7 @@ export const updateVideo = createAsyncThunk(
     async ({videoId, videoData}, {rejectWithValue, getState}) => {
         try {
             const token = getState().auth?.user?.token;
-            const response = await axios.patch(`/videos/${videoId}`, videoData, {
+            const response = await api.patch(`/videos/${videoId}`, videoData, {
                 headers: { 
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`,
@@ -110,7 +103,7 @@ export const deleteVideo = createAsyncThunk(
     'video/deleteVideo',
     async (videoId, {rejectWithValue}) => {
         try {
-            const response = await axios.delete(`/videos/${videoId}`);
+            const response = await api.delete(`/videos/${videoId}`);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response.data.message || "Failed to delete video");
@@ -122,7 +115,7 @@ export const toggleVideoPublishStatus = createAsyncThunk(
     'video/toggleVideoPublishStatus',
     async (videoId, {rejectWithValue}) => {
         try {
-            const response = await axios.patch(`/videos/toggle/publish/${videoId}`)
+            const response = await api.patch(`/videos/toggle/publish/${videoId}`)
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response.data.message || "Failed to toggle video publish status");

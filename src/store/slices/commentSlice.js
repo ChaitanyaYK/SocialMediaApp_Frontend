@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import api from "../../utils/axios";
 
 axios.defaults.withCredentials = true;
 
@@ -52,7 +53,7 @@ export const fetchVideoComments = createAsyncThunk(
   "comments/fetchVideoComments",
   async ({ videoId }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/comments/${videoId}`);
+      const response = await api.get(`/comments/${videoId}`);
       return {
         videoId,
         comments: response.data.data.comments,
@@ -69,7 +70,7 @@ export const insertComment = createAsyncThunk(
   "comments/insertComment",
   async ({ videoId, content }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`/comments/${videoId}`, { content });
+      const response = await api.post(`/comments/${videoId}`, { content });
       return {
         videoId,
         comment: response.data.data,
@@ -86,7 +87,7 @@ export const addReply = createAsyncThunk(
   "comments/addCommentReply",
   async ({ commentId, content }, {rejectWithValue}) => {
     try {
-      const response = await axios.post(`/comments/reply/${commentId}`, {content});
+      const response = await api.post(`/comments/reply/${commentId}`, {content});
       return {
         commentId,
         reply: response.data.data
@@ -103,7 +104,7 @@ export const editComment = createAsyncThunk(
   "comments/editComment",
   async ({ commentId, content }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`/comments/c/${commentId}`, { content });
+      const response = await api.patch(`/comments/c/${commentId}`, { content });
       
       return response.data.data;
     } catch (error) {
@@ -118,7 +119,7 @@ export const deletedComment = createAsyncThunk(
   "comments/deletedComment",
   async ({ videoId, commentId }, { rejectWithValue }) => {
     try { 
-      await axios.delete(`/comments/c/${commentId}`);
+      await api.delete(`/comments/c/${commentId}`);
       return { videoId, commentId };
     } catch (error) {
       return rejectWithValue(

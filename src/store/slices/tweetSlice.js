@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import api from "../../utils/axios";
 
 export const insertTweet = () => async (dispatch) => {
     try {
