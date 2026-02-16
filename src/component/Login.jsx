@@ -122,7 +122,7 @@ function Login() {
         </div>
       
         <div className="flex justify-center align-middle items-center">
-          <Button type="submit" className="px-3 py-2" disabled={loading} >
+          <Button type="submit" className="p-3" disabled={loading} >
               {loading ? "Signing in..." : "Sign in"}
           </Button>
         </div>

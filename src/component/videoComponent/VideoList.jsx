@@ -6,6 +6,7 @@ import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import {LikedButton} from "../index.js";
 import {toggleVideoLiked} from "../../store/slices/likeSlice.js"
 import timeAgo from "../../utils/timeAgo.js";
+import { EllipsisVertical } from "lucide-react";
 
 
 const VideoList = () => {
@@ -39,30 +40,37 @@ const VideoList = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className={`w-full grid grid-cols-3 auto-cols-max align-middle justify-items-center m-2`}>
-      
+    <div className={`w-full grid grid-4 px-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 justify-items-center`}>
+
         {videos.map((video) => (
           <div key={video._id} onClick={() => setCurrVideoId((prev) => prev === video._id ? null : video._id )} className="">
-          <div className="border-2 border-neutral-600 p-2 gap-2 mb-5 shadow-2xl hover:border-1 hover:bg-neutral-800 rounded-2xl">
-          <div className="text-white rounded-2xl">
-           
-            <img onClick={() => navigate(`/watch/${video._id}`)} className="rounded-2xl h-45 rounded-2xl" width="340" height="180" src={`${video.thumbnail.url}`} >
-              
-            </img>
-            <div className="flex gap-1 p-1">
-              <div>
-              <img onClick={() => navigate(`/channel/${video.ownerDetails.username}`)} src={video.ownerDetails.avatar} className="h-10 w-10 rounded-full cursor-pointer border-2"/>
+            <div className="border-2 border-neutral-600 p-2 gap-2 mb-5 shadow-2xl hover:border-1 hover:bg-neutral-800 rounded-2xl transition">
+              {/* <div className="text-white rounded-2xl"> */}
+              <div className="w-full max-w-[360px] min-w-[250px] border-neutral-600 p-2 mb-4 shadow-xl hover:bg-neutral-800 rounded-2xl transition">
+                <img onClick={() => navigate(`/watch/${video._id}`)} className="rounded-2xl aspect-video h-45 rounded-2xl cursor-pointer" width="340" height="180" src={`${video.thumbnail.url}`} >
+                  
+                </img>
+                <div className="flex justify-between mt-1 overflow-hidden">
+                  <div className="flex">
+                    <span className="mr-2">
+                      <img onClick={() => navigate(`/channel/${video.ownerDetails.username}`)} src={video.ownerDetails.avatar} className="h-10 w-10 rounded-full cursor-pointer border-2"/>
+                    </span>
+                    <div className="mr-2">
+                        <h2 className="text-lg font-semibold">{video.title}</h2>
+                        <p>{`@${video.ownerDetails.username}`}</p>
+                    </div>
+                  </div>
+                  <span className="">
+                    <EllipsisVertical className="rounded-lg w-7 h-7 hover:rounded-3xl hover:bg-neutral-600"/>
+                  </span>
+                </div>
+                <span className="flex text-sm mt-1">
+                  <p className="mr-2">{timeAgo(video.createdAt)}</p>
+                  <p className="">{video.views} views</p>
+                </span>
+                  <p className="text-md text-gray-400">{video.description}</p>
               </div>
-              <div className="">
-                <h2 className="text-lg font-semibold">{video.title}</h2>
-                <p>{`@${video.ownerDetails.username}`}</p>
-              </div>
-              <LikedButton isLiked={likeByVideoId[video._id]} onClick={handleVideoLike} />
             </div>
-              <p className="text-sm mt-1"><strong>{timeAgo(video.createdAt)}</strong></p>
-              <p className="text-md text-gray-400">{video.description}</p>
-          </div>
-          </div>
           </ div>
 
         ))}

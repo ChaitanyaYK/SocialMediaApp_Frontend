@@ -12,6 +12,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import LikedVideos from './pages/LikedVideos.jsx';
 import PlaylistPage from './component/PlayList/PlaylistPage.jsx';
+import SearchPage from './pages/SearchPage.jsx';
 
 // import { ApiProvider } from '@reduxjs/toolkit/query/react'; // optional for redux store provide it give api={} like provider give store={}
 
@@ -144,6 +145,12 @@ const initialState = createBrowserRouter([
         path: "/dashboard",
         element: (
           <VideoDashboard />
+        )
+      },
+      {
+        path: "/search",
+        element: (
+          <SearchPage />
         )
       }
     //   {

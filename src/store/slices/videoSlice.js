@@ -24,9 +24,9 @@ export const createFormData = (data) => {
     // Async thunks
 export const fetchVideos = createAsyncThunk(
   'video/fetchVideos',
-  async ({ page = 1, limit = 10, query = "", sortBy = "newest" }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, query = "", sortBy = "newest", singnal }, { rejectWithValue }) => {
     try {
-      const response = await api.get('/videos', { params: { page, limit, query, sortBy } });
+      const response = await api.get('/videos', { params: { page, limit, query, sortBy } }, singnal);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch videos");
