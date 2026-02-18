@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchVideos } from "../../store/slices/videoSlice";
 import CommentList from "../commentComponent/CommentList";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
-import {LikedButton} from "../index.js";
+import {ContextMenu, LikedButton} from "../index.js";
 import {toggleVideoLiked} from "../../store/slices/likeSlice.js"
 import timeAgo from "../../utils/timeAgo.js";
 import { EllipsisVertical } from "lucide-react";
+import { useContextMenu } from "../../context/ContextMenuContext.jsx";
 
 
 const VideoList = () => {
@@ -14,8 +15,10 @@ const VideoList = () => {
   const navigate = useNavigate();
   const {videos, loading, error, pagination} = useSelector((state) => state.video);
   const {likeByVideoId} = useSelector((state) => state.likes);
+
   const [currVideoId, setCurrVideoId] = useState(null);
   const {open, setOpen} = useOutletContext();
+  const { openMenu } = useContextMenu();
 
   // const poster = videos.videoFile.replace('/upload/', '/upload/so_1/').replace('.mp4', '.jpg');
 
@@ -61,7 +64,19 @@ const VideoList = () => {
                     </div>
                   </div>
                   <span className="">
-                    <EllipsisVertical className="rounded-lg w-7 h-7 hover:rounded-3xl hover:bg-neutral-600"/>
+                    <EllipsisVertical onClick={(e) => {
+                        e.stopPropagation();
+
+                        openMenu({
+                          type: "video",
+                          data: video,
+                          position: {
+                            x: e.clientX,
+                            y: e.clientY,
+                          }
+                        })
+                      }} className="rounded-lg w-7 h-7 hover:rounded-3xl hover:bg-neutral-600"
+                    />
                   </span>
                 </div>
                 <span className="flex text-sm mt-1">

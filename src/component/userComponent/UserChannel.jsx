@@ -41,7 +41,8 @@ const UserChannel = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
-       
+       {console.log(profile)
+       }
       {/* COVER */}
       <div className="relative">
         <img
@@ -98,7 +99,7 @@ const UserChannel = () => {
       )}
 
       <div>
-        <PlaylistGrid />
+        <PlaylistGrid userId={profile._id} />
       </div>
     </div>
   );

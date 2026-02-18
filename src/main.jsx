@@ -7,12 +7,13 @@ import store from './store/store.js';
 // import Home from './pages/Home.jsx';
 import Signup from './pages/Signup.jsx';
 import Login from './pages/Login.jsx';
-import { AuthLayout, UploadVideo, ChangePassword, UserProfile, UserChannel, WatchHistory, HomePage, VideoList, CommentForm, CommentList, Watch, SideBar, PlaylistGrid, UpdatePlaylist, VideoDashboard } from './component/index.js';
+import { AuthLayout, UploadVideo, ChangePassword, UserProfile, UserChannel, WatchHistory, HomePage, VideoList, CommentForm, CommentList, Watch, SideBar, PlaylistGrid, UpdatePlaylist, VideoDashboard, ContextMenu } from './component/index.js';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import LikedVideos from './pages/LikedVideos.jsx';
 import PlaylistPage from './component/PlayList/PlaylistPage.jsx';
 import SearchPage from './pages/SearchPage.jsx';
+import { ContextMenuProvider } from './context/ContextMenuContext.jsx';
 
 // import { ApiProvider } from '@reduxjs/toolkit/query/react'; // optional for redux store provide it give api={} like provider give store={}
 
@@ -152,7 +153,7 @@ const initialState = createBrowserRouter([
         element: (
           <SearchPage />
         )
-      }
+      },
     //   {
     //     path: '/signup',
     //     element: (
@@ -169,7 +170,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
       <ToastContainer position="top-right" theme="colored" />
-      <RouterProvider router={initialState} />
+      <ContextMenuProvider>
+        <RouterProvider router={initialState} />
+      </ContextMenuProvider>
     </Provider>
   </React.StrictMode>,
 )

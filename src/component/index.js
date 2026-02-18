@@ -27,7 +27,10 @@ import LikedButton from './likeComponent/LikedButton.jsx';
 import LikeIcon from './likeComponent/LikeIcon.jsx';
 import PlaylistGrid from './PlayList/PlaylistGrid.jsx';
 import PlaylistCard from './PlayList/PlaylistCard.jsx';
+import PlaylistPage from './PlayList/PlaylistPage.jsx';
+import PlaylistSelecter from './PlayList/PlaylistSelecter.jsx';
 import UpdatePlaylist from './PlayList/UpdatePlaylist.jsx';
+import ContextMenu from './ContextMenu.jsx';
 
 export {
     AuthLayout,
@@ -59,5 +62,8 @@ export {
     LikeIcon,
     PlaylistGrid,
     PlaylistCard,
-    UpdatePlaylist
+    PlaylistPage,
+    PlaylistSelecter,
+    UpdatePlaylist,
+    ContextMenu
 }

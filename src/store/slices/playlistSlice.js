@@ -12,7 +12,7 @@ export const createPlaylist = createAsyncThunk(
             const response = await api.post('/playlist', playlistData);
             return response.data.data;
         } catch (error) {
-            throw rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -24,7 +24,7 @@ export const updatePlaylist = createAsyncThunk(
             const response = await api.patch(`/playlist/${playlistId}`, playlistData);
             return response.data.data;
         } catch (error) {
-            throw rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -36,7 +36,7 @@ export const getUserPlaylists = createAsyncThunk(
             const response = await api.get(`/playlist/user/${userId}`);
             return response.data.data;
         } catch (error) {
-            throw rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -48,7 +48,7 @@ export const getPlaylistById = createAsyncThunk(
             const response = await api.get(`/playlist/${playlistId}`);
             return response.data.data;
         } catch (error) {
-            throw rejectWithValue(error.response?.data.message || error?.message);
+            return rejectWithValue(error.response?.data.message || error?.message);
         }
     }
 )
@@ -60,7 +60,7 @@ export const deletePlaylist = createAsyncThunk(
             const response = await api.delete(`/playlist/${playlistId}`);
             return response.data.data;
         } catch (error) {
-            throw rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -69,10 +69,10 @@ export const addVideoToPlaylist = createAsyncThunk(
     "playlist/addVideoToPlaylist",
     async({ playlistId, videoId }, {rejectWithValue}) => {
         try {
-            const response = await api.patch(`/api/playlist/${playlistId}/video/${videoId}`);
+            const response = await api.patch(`/playlist/${playlistId}/videos/${videoId}`);
             return response.data.data;
         } catch (error) {
-            throw rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -84,7 +84,7 @@ export const deleteVideoFromPlaylist = createAsyncThunk(
             const response = await api.patch(`/playlist/${playlistId}/remove/${videoId}`);
             return response.data.data;
         } catch (error) {
-            throw rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )

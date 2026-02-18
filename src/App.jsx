@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { Header, Footer, SideBar } from "./component";
+import { Header, Footer, SideBar, ContextMenu } from "./component";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "./store/slices/authSlice";
 
@@ -23,6 +23,7 @@ function App() {
           className={`flex-1 max-w-310 overflow-y-auto transition-all duration-300`}
         >
           <Outlet context={{open, setOpen}} />
+          <ContextMenu />
         </div>
       </div>
 

@@ -46,9 +46,6 @@ export const toggleSubscription = createAsyncThunk(
     }
 )
 
-const findIndexSubscription = (state, action) => {
-    state.findIndex((subscriber) => subscriber._id === action.payload._id)
-}
 
 const subscriptionSlice = createSlice({
     name: 'subscription',
@@ -124,7 +121,7 @@ const subscriptionSlice = createSlice({
 })
 
 
-export const {resetSubscriptionState} = subscriptionSlice.actions;
+export const { resetSubscriptionState } = subscriptionSlice.actions;
 
 
 export default subscriptionSlice.reducer;
