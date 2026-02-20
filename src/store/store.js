@@ -4,7 +4,8 @@ import videoSlice from './slices/videoSlice.js';
 import commentSlice from './slices/commentSlice.js';
 import subscriptionSlice from './slices/subscriptionSlice.js';
 import likeSlice from './slices/likeSlice.js';
-import playlistSlice from './slices/playlistSlice.js'
+import playlistSlice from './slices/playlistSlice.js';
+import healthcheckSlice from './slices/healthcheckSlice.js';
 
 const store = configureStore({
     reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
         subscription: subscriptionSlice,
         likes: likeSlice,
         playlist: playlistSlice,
+        health: healthcheckSlice,
         devTools: true
 
     },

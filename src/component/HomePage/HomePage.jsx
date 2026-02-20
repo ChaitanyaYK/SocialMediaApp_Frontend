@@ -13,7 +13,7 @@ const HomePage = () => {
   return (
     <div>
       <div className="max-w-310 bg-neutral-900 p-2">
-        <Link  className="flex flex-row flex-nowrap overflow-x-auto space-x-3 ">
+        <Link  className="flex flex-row flex-nowrap overflow-x-hidden space-x-3 ">
           {options.map((option, index) => (
             <div
               key={index}

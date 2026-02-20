@@ -4,20 +4,22 @@ import { getChannelProfile } from "../../store/slices/authSlice";
 import { getUserChannelSubscriber } from "../../store/slices/subscriptionSlice";
 import { useParams, useNavigate, replace } from "react-router-dom";
 import { PlaylistGrid } from "../index.js";
+import { fetchUserVideos } from "../../store/slices/videoSlice.js";
 
 const UserChannel = () => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, profile } = useSelector((state) => state.auth);
+  const { user, profile, loading: channelLoading } = useSelector((state) => state.auth);
   const { subscribers, totalSubscribers, loading } = useSelector(
     (state) => state.subscription
   );
+  const { videos } = useSelector((state) => state.video);
 
-  const { username: channelUsername } = useParams();
+  const { username } = useParams();
 
-  const currChannelName = channelUsername || user?.username;
+  const currChannelName = username || user?.username;
 
   useEffect(() => {
     if (profile?._id) {
@@ -32,12 +34,26 @@ const UserChannel = () => {
   }, [dispatch, currChannelName]);
 
   useEffect(() => {
-    if (!channelUsername && user?.username) {
+    if (!username && user?.username) {
       navigate(`/channel/${user.username}`, {replace: true});
     }
-  }, [channelUsername, user.username, navigate])
+  }, [username, user.username, navigate])
+
+  useEffect(() => {
+    if (profile?._id) {
+      dispatch(fetchUserVideos(profile._id));
+    }
+  }, [profile?._id])
 
   if (!profile) return <div>Loading channel...</div>;
+
+   if (channelLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-lg text-gray-400">
+        Loading Channel...
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
@@ -99,7 +115,42 @@ const UserChannel = () => {
       )}
 
       <div>
+        <div>
+          PlayList
+        </div>
         <PlaylistGrid userId={profile._id} />
+      </div>
+
+      <div>
+        <h2 className="text-xl font-semibold mt-8 mb-4">
+          Uploaded Videos
+        </h2>
+
+        {videos.length === 0 ? (
+          <p className="text-gray-500" >No uploads yet</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {videos.map(video => (
+              <div
+                key={video._id}
+                className="cursor-pointer"
+                onClick={() => navigate(`/watch/${video._id}`)}
+              >
+                {console.log("url: ", video.thumbnail?.url)
+                }
+                <img 
+                  src={video?.thumbnail?.url}
+                  className="rounded-lg w-full"
+                />
+                <h3 className="mt-2 font-semibold">
+                  {video.title}
+                </h3>
+              </div>
+            ))}
+          </div>
+        )
+
+        }
       </div>
     </div>
   );

@@ -56,7 +56,7 @@ const PlaylistPage = () => {
           <button onClick={() => navigate(`/playlist/${playlistId}/edit`)} className='flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg'>
             <PenBox className='w-4 h-4'/> Edit
           </button>
-          <button onClick={() => setOpen(!open)} className='flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg'>
+          <button  onClick={() => navigate('/publishVideo')} className='flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg'>
             <Plus className='w-4 h-4'/> Add Video
           </button>
           <button onClick={handleDeletePlaylist} className='flex items-center gap-2 bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg'>
@@ -123,9 +123,6 @@ const PlaylistPage = () => {
         ))}
       </div>
 
-      {open && (
-        <AddVideoModal open={open} onAdd={handleAddVideoToPlaylist} onClose={() => setOpen(false)} />
-      )}
 
       {playlist?.videos?.length === 0 && (
         <div className='text-center text-gray-400 mt-20'>
@@ -141,33 +138,3 @@ const PlaylistPage = () => {
 
 export default PlaylistPage;
 
-
-export const AddVideoModal = ({ open, onClose, onAdd }) => {
-  if (!open) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="bg-neutral-900 w-[420px] rounded-xl p-6 shadow-xl">
-        <h2 className="text-xl font-bold mb-4">Add Video to Playlist</h2>
-
-        <input value="" type="text" placeholder="Paste Video ID"
-          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 text-white mb-4"
-        />
-
-        <div className="flex justify-end gap-3">
-          <button onClick={onClose}
-           className="px-4 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600"
-          >
-            Cancel
-          </button>
-
-          <button onClick={onAdd}
-          className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500"
-          >
-            Add
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};

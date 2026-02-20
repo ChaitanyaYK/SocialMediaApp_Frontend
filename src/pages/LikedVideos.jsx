@@ -7,12 +7,31 @@ import timeAgo from "../utils/timeAgo.js"
 const LikedVideos = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {likedVideos} = useSelector((state) => state.likes);
+    const {likedVideos, loading} = useSelector((state) => state.likes);
     const [videoId, setVideoId] = useState(null);
 
     useEffect(() => {
       dispatch(getLikedVideo());
     }, [dispatch])
+
+     if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-lg text-gray-400">
+        Loading your Liked Video...
+      </div>
+    );
+  }
+
+  if (!likedVideos || likedVideos.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen text-gray-400">
+        <p className="text-xl font-semibold">No Watch Liked Video Found</p>
+        <Link to="/">
+          <Button className="mt-6">Go Watch Videos</Button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div> 

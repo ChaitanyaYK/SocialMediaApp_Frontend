@@ -22,7 +22,7 @@ const Input = function Input({
              id={id}
              type={type}
              placeholder={placeholder}
-             className={`px-3 py-2 rounded-lg bg-zinc-900 text-white outline-none duration-200 border border-gray-200 w-full ${className}`}
+             className={`px-3 py-2 rounded-lg bg-zinc-900 focus:border-blue-500 text-white outline-none duration-200 border border-gray-200 w-full ${className}`}
              {...props}
              ref={ref}
             />

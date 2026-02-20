@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import api from "../../utils/axios.js"
-import { s } from "framer-motion/m";
+import { form, s } from "framer-motion/m";
 
 // If you use cookies for auth (res.cookie('token', ...) in backend), then make sure every Axios request has:
 // Axios default config
@@ -15,6 +15,8 @@ export const createFormData = (data) => {
     Object.entries(data).forEach(([key, value]) => {
         if (Array.isArray(value)) {
             value.forEach((file) => formData.append(key, file));
+        } else if(typeof value === "boolean") {
+            formData.append(key, value ? "true" : "false");
         } else {
             formData.append(key, value);
         }
@@ -25,9 +27,12 @@ export const createFormData = (data) => {
     // Async thunks
 export const fetchVideos = createAsyncThunk(
   'video/fetchVideos',
-  async ({ page = 1, limit = 10, query = "", sortBy = "newest", singnal }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, query = "", sortBy = "newest", signal }, { rejectWithValue }) => {
     try {
-      const response = await api.get('/videos', { params: { page, limit, query, sortBy } }, singnal);
+      const response = await api.get('/videos', { 
+        params: { page, limit, query, sortBy },
+        signal
+      }, );
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch videos");
@@ -49,14 +54,14 @@ export const fetchVideoById = createAsyncThunk(
     }
 )
 
-export const fetchVideoUrl = createAsyncThunk(
+export const fetchUserVideos = createAsyncThunk(
     'video/fetchVideoUrl',
-    async (videoId, {rejectWithValue}) => {
+    async (userId, {rejectWithValue}) => {
         try {
-            const response = await api.get(`/videos/geturl/${videoId}`);
-            return response.data.data.url;
+            const response = await api.get(`/videos/user/${userId}`);
+            return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message || "Failed to fetch video url");
+            return rejectWithValue(error.response.data.message || "Failed to fetch user videos");
         }
     }
 )
@@ -244,14 +249,14 @@ const videoSlice = createSlice({
             state.error = action.payload;
         })
 
-        .addCase(fetchVideoUrl.pending, (state, action) => {
+        .addCase(fetchUserVideos.pending, (state, action) => {
             state.loading = true;
         })
-        .addCase(fetchVideoUrl.fulfilled, (state, action) => {
+        .addCase(fetchUserVideos.fulfilled, (state, action) => {
             state.loading = false;
-            state.signedUrl = action.payload;
+            state.videos = action.payload;
         })
-        .addCase(fetchVideoUrl.rejected, (state, action) => {
+        .addCase(fetchUserVideos.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
         })

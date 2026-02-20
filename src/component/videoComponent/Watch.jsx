@@ -88,9 +88,9 @@ const Watch = () => {
         </div>
         <div className='flex justify-between font-bold m-2 cursor-pointer'>
             <div className='flex flex-nowrap font-semibold'>
-              <div onClick={() => navigate(`/channel/${currVideo.owner.username}`)} className='flex'>
-                <img src={currVideo.owner.avatar} alt={currVideo.owner.username} className="h-10 w-10 rounded-full border-2 mr-2  "/>
-                <p className='hover:text-blue-500'>{`@${currVideo.owner.username}`}</p>
+              <div onClick={() => navigate(`/channel/${currVideo.owner?.username}`)} className='flex'>
+                <img src={currVideo.owner?.avatar} alt={currVideo.owner?.username} className="h-10 w-10 rounded-full border-2 mr-2  "/>
+                <p className='hover:text-blue-500'>{`@${currVideo.owner?.username}`}</p>
               </div>
               <Button onClick={handleSubscribed} className={`h-11 ml-2 p-2.5 shadow-2xl bg-gray-700 hover:bg-gray-600`} bgColor='bg-red'>
               

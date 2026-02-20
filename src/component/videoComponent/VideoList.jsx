@@ -31,7 +31,7 @@ const VideoList = () => {
       setNow(Date.now());
     }, 60000)
 
-    return clearInterval(interval);
+    return () => clearInterval(interval);
   }, [])
 
   const handleVideoLike = (e) => {

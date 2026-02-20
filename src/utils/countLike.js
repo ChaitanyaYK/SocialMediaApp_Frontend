@@ -10,6 +10,7 @@ function countLike(likes) {
     if (likes > 100000) {
         return `${milionLike} m`;
     }
+    return `${likes}`
 }
 
 export default countLike;
