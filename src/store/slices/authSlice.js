@@ -1,7 +1,7 @@
 // src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import api from "../../utils/axios";
+import api, { requestWithRetry } from "../../utils/axios";
 
 
 // Axios default config
@@ -29,7 +29,12 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { dispatch, rejectWithValue}) => {
     try {
-      await api.post("/user/login", credentials);
+      // await api.post("/user/login", credentials);
+      await requestWithRetry({
+        method: "POST",
+        url: "/user/login",
+        data: credentials,
+      })
       const userRes = await dispatch(getCurrentUser()).unwrap();
       // return response.data.data.user || response.data.data;
       return userRes;

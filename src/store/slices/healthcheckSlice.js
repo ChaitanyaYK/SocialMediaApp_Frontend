@@ -8,7 +8,7 @@ export const healthcheck = createAsyncThunk(
             const response = await api.get("/health/check");
             return response.data.data;
         } catch (error) {
-            rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message);
         }
     }
 )

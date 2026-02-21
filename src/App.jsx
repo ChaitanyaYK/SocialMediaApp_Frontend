@@ -4,6 +4,7 @@ import { Header, Footer, SideBar, ContextMenu } from "./component";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "./store/slices/authSlice";
 import { healthResponse } from "./store/slices/healthcheckSlice";
+import api from "./utils/axios";
 
 function App() {
   const [open, setOpen] = useState(true);
@@ -16,8 +17,8 @@ function App() {
       }, [dispatch])
 
       useEffect(() => {
-        dispatch(healthResponse());
-      }, [dispatch])
+        api.get("/healthcheck");
+      }, [])
 
   return (
     <div className="flex flex-col bg-neutral-800 dark:bg-neutral-900 transition-colors">

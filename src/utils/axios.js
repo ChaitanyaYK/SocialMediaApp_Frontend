@@ -15,4 +15,19 @@ const api = axios.create({
 //   return config;
 // })
 
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const requestWithRetry = async (config, retries = 5) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await api(config);
+        } catch (error) {
+            console.log("Backend waking... retrying");
+            await wait(5000);
+        }
+    }
+
+    throw new Error("Server is waking up. Please try again.");
+};
+
 export default api;
