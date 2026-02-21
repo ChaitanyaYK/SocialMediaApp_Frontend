@@ -12,7 +12,7 @@ function Button({
     const id = useId();
 
     return (
-        <button className={`flex items-center cursor-pointer hover:cursor-pointer ${className} ${bgColor} ${textColor} ${rounded}`} {...props}>
+        <button className={`flex items-center cursor-pointer hover:cursor-pointer p-2 ${className} ${bgColor} ${textColor} ${rounded}`} {...props}>
             {children}
         </button>
     )

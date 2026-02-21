@@ -28,7 +28,7 @@ const LikedVideos = () => {
       <div className="flex flex-col justify-center items-center h-screen text-gray-400">
         <p className="text-xl font-semibold">No Watch Liked Video Found</p>
         <Link to="/">
-          <Button className="mt-6">Go Watch Videos</Button>
+          <Button className="mt-6 m-3.5">Go Watch Videos</Button>
         </Link>
       </div>
     );

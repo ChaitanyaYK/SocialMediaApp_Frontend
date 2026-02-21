@@ -32,7 +32,7 @@ const healthcheckSlice = createSlice({
                 state.loading = false;
                 state.data = action.payload;
             })
-            .addCase(healthcheck.pending, (state, action) => {
+            .addCase(healthcheck.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
