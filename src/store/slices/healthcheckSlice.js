@@ -5,10 +5,10 @@ export const healthcheck = createAsyncThunk(
     "healthcheck/check",
     async(_, {rejectWithValue}) => {
         try {
-            const response = await api.get("/health/check");
+            const response = await api.get("/healthcheck");
             return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message || "Server not reachable");
         }
     }
 )
@@ -16,14 +16,27 @@ export const healthcheck = createAsyncThunk(
 const healthcheckSlice = createSlice({
     name: "health",
     initialState: {
-        data: null
+        data: null,
+        loading: false,
+        error: null,
     },
     reducers: {
-        healthResponse: (state, action) => {
-            state.data = action.payload;
-        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(healthcheck.pending, (state) => {
+                state.loading = true;
+                state.error = false;
+            })
+            .addCase(healthcheck.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+            })
+            .addCase(healthcheck.pending, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
     }
 })
 
-export const { healthResponse } = healthcheckSlice.actions;
 export default healthcheckSlice.reducer;

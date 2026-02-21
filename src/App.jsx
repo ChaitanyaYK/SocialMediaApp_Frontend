@@ -3,8 +3,10 @@ import { Outlet } from "react-router-dom";
 import { Header, Footer, SideBar, ContextMenu } from "./component";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "./store/slices/authSlice";
-import { healthResponse } from "./store/slices/healthcheckSlice";
+import { healthcheck } from "./store/slices/healthcheckSlice";
 import api from "./utils/axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [open, setOpen] = useState(true);
@@ -17,8 +19,14 @@ function App() {
       }, [dispatch])
 
       useEffect(() => {
-        api.get("/healthcheck");
-      }, [])
+        dispatch(healthcheck()).unwrap()
+        .then((msg) => {
+          toast.success("Backend is Live");
+        })
+        .catch((err) => {
+          toast.error("Backend is starting...");
+        })
+      }, [dispatch])
 
   return (
     <div className="flex flex-col bg-neutral-800 dark:bg-neutral-900 transition-colors">
